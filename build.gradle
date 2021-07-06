@@ -62,4 +62,6 @@ task copyBarnacleConf(type: Copy) {
     into "$rootDir/src/main/resources"
 }
 
-jar.dependsOn copyBarnacleConf
+jar.dependsOn(copyBarnacleConf, barnacle)
+tasks.findByName('jar').mustRunAfter('barnacle')
+tasks.findByName('barnacle').mustRunAfter('copyBarnacleConf')
