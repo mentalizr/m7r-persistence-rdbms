@@ -1,0 +1,65 @@
+import java.nio.file.Paths
+
+plugins {
+    id 'java-library'
+}
+
+group 'org.mentalizr'
+version '1.0-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://jitpack.io" }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+            srcDir 'src/main/generated'
+        }
+    }
+}
+
+task barnacle(type: Exec) {
+    // println System.getenv("PATH")
+
+    mkdir "$buildDir/sql"
+
+    commandLine "barnacle", "$projectDir/src/main/resources/barnacle.conf"
+}
+
+
+dependencies {
+
+    implementation 'com.github.arthurpicht:utils-core:1.2.1'
+
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    api 'de.mkammerer:argon2-jvm:2.5'
+
+    implementation 'com.github.arthurpicht:Barnacle:master-SNAPSHOT'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:2.4.3'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task copyBarnacleConf(type: Copy) {
+    def barnacleConf = Paths.get("$rootDir").resolve("../../infra/m7r-config/common/barnacle.conf").normalize().toFile()
+    if (!barnacleConf.exists()) throw new GradleException(barnacleConf.absolutePath + " not found.");
+
+    from file(barnacleConf)
+    into "$rootDir/src/main/resources"
+}
+
+jar.dependsOn copyBarnacleConf

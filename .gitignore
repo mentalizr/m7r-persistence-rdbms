@@ -1,0 +1,11 @@
+*~
+.gradle/
+.idea/
+build/
+gradle/
+src/main/generated/**/*.java
+gradlew
+gradlew.bat
+src/main/resources/barnacle.conf
+
+
