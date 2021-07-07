@@ -28,13 +28,12 @@ sourceSets {
 }
 
 task barnacle(type: Exec) {
-    // println System.getenv("PATH")
+//    println System.getenv("PATH")
 
     mkdir "$buildDir/sql"
 
     commandLine "barnacle", "$projectDir/src/main/resources/barnacle.conf"
 }
-
 
 dependencies {
 
@@ -60,6 +59,11 @@ task copyBarnacleConf(type: Copy) {
 
     from file(barnacleConf)
     into "$rootDir/src/main/resources"
+}
+
+clean {
+    delete "$rootDir/src/main/generated/org"
+    delete "$rootDir/src/main/resources/barnacle.conf"
 }
 
 jar.dependsOn(copyBarnacleConf, barnacle)
