@@ -30,6 +30,11 @@ sourceSets {
 task barnacle(type: Exec) {
 //    println System.getenv("PATH")
 
+    inputs.dir("$rootDir/src/main/java/org/mentalizr/persistence/rdbms/barnacle/vof")
+    inputs.file("$rootDir/src/main/resources/barnacle.conf")
+    outputs.dir("$rootDir/src/main/generated")
+    outputs.dir("$buildDir/sql")
+
     mkdir "$buildDir/sql"
 
     commandLine "barnacle", "$projectDir/src/main/resources/barnacle.conf"
@@ -57,6 +62,11 @@ task copyBarnacleConf(type: Copy) {
     def barnacleConf = Paths.get("$rootDir").resolve("../../infra/m7r-config/common/barnacle.conf").normalize().toFile()
     if (!barnacleConf.exists()) throw new GradleException(barnacleConf.absolutePath + " not found.");
 
+    inputs.file(barnacleConf)
+    outputs.file("$rootDir/src/main/resources/barnacle.conf")
+
+    println "$barnacleConf"
+
     from file(barnacleConf)
     into "$rootDir/src/main/resources"
 }
@@ -66,6 +76,7 @@ clean {
     delete "$rootDir/src/main/resources/barnacle.conf"
 }
 
-jar.dependsOn(copyBarnacleConf, barnacle)
+barnacle.dependsOn(copyBarnacleConf)
+jar.dependsOn(barnacle)
 tasks.findByName('jar').mustRunAfter('barnacle')
 tasks.findByName('barnacle').mustRunAfter('copyBarnacleConf')
