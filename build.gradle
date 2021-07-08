@@ -65,8 +65,6 @@ task copyBarnacleConf(type: Copy) {
     inputs.file(barnacleConf)
     outputs.file("$rootDir/src/main/resources/barnacle.conf")
 
-    println "$barnacleConf"
-
     from file(barnacleConf)
     into "$rootDir/src/main/resources"
 }
