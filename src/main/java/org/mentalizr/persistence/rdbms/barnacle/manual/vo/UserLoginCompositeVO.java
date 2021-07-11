@@ -1,5 +1,6 @@
 package org.mentalizr.persistence.rdbms.barnacle.manual.vo;
 
+import de.arthurpicht.utils.core.strings.Strings;
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.DataSourceException;
 import org.mentalizr.persistence.rdbms.barnacle.dao.RoleAdminDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.RolePatientDAO;
@@ -11,8 +12,8 @@ import java.util.List;
 
 public class UserLoginCompositeVO {
 
-    private UserVO userVO;
-    private UserLoginVO userLoginVO;
+    private final UserVO userVO;
+    private final UserLoginVO userLoginVO;
 
     public UserLoginCompositeVO(UserVO userVO, UserLoginVO userLoginVO) {
         this.userVO = userVO;
