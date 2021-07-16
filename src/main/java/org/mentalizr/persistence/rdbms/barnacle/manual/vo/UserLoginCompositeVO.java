@@ -1,6 +1,5 @@
 package org.mentalizr.persistence.rdbms.barnacle.manual.vo;
 
-import de.arthurpicht.utils.core.strings.Strings;
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.DataSourceException;
 import org.mentalizr.persistence.rdbms.barnacle.dao.RoleAdminDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.RolePatientDAO;
