@@ -23,17 +23,6 @@ public class RolePatientVOF implements Serializable {
     protected String id;
 
     @Barnacle
-    @ColumnName("program_id")
-    @ForeignKey(
-            foreignKeyName = "fk_program_id",
-            referenceTableName = "program",
-            referenceColumnName = "program_id",
-            getEntityMethod = true,
-            entityMethodName = "programVO"
-    )
-    protected String programId;
-
-    @Barnacle
     @ColumnName("therapist_id")
     @ForeignKey(
             foreignKeyName = "fk_therapist_id",

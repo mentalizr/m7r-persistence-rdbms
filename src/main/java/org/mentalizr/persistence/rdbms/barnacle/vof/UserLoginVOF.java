@@ -3,6 +3,7 @@ package org.mentalizr.persistence.rdbms.barnacle.vof;
 import de.arthurpicht.barnacle.annotations.Annotations.*;
 
 @Barnacle
+@TableName("user_login")
 public class UserLoginVOF {
 
     @Barnacle

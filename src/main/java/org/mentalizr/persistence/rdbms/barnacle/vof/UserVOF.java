@@ -24,31 +24,4 @@ public class UserVOF implements Serializable {
     @Barnacle
     protected Date lastActive;
 
-//    @Barnacle
-//    // @NotNull
-//    @Unique
-//    protected String username;
-//
-//    @Barnacle
-//    @ColumnName("password_hash")
-//    // @NotNull
-//    protected String passwordHash;
-
-//    protected String accessKey;
-
-//    @Barnacle
-//    // @NotNull
-//    protected String email;
-//
-//    @Barnacle
-//    @ColumnName("first_name")
-//    protected String firstName;
-//
-//    @Barnacle
-//    @ColumnName("last_name")
-//    protected String lastName;
-//
-//    @Barnacle
-//    protected int gender;
-
 }

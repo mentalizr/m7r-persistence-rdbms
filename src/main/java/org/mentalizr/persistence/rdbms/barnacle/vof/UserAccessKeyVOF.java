@@ -3,6 +3,7 @@ package org.mentalizr.persistence.rdbms.barnacle.vof;
 import de.arthurpicht.barnacle.annotations.Annotations.*;
 
 @Barnacle
+@TableName("user_access_key")
 public class UserAccessKeyVOF {
 
     @Barnacle
