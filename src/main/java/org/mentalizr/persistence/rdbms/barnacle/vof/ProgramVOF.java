@@ -12,7 +12,6 @@ public class ProgramVOF implements Serializable {
 
     @Barnacle
     @PrimaryKey
-    @ColumnName("program_id")
-    protected String programId;
+    protected String id;
 
 }

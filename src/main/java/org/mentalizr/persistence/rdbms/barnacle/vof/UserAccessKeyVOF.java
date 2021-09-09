@@ -12,7 +12,7 @@ public class UserAccessKeyVOF {
     @ForeignKey(
             foreignKeyName = "fk_user_access_key_user_id",
             referenceTableName = "user",
-            referenceColumnName = "user_id",
+            referenceColumnName = "id",
             getEntityMethod = true,
             entityMethodName = "userVO",
             getReferenceEntityMethod = true,

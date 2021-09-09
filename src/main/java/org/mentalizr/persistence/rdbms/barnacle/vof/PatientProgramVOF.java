@@ -12,16 +12,16 @@ public class PatientProgramVOF implements Serializable {
     @ColumnName("user_id")
     @PrimaryKey
     @ForeignKey(
-            foreignKeyName = "fk_patient_id",
+            foreignKeyName = "fk_user_id",
             referenceTableName = "role_patient",
-            referenceColumnName = "id",
+            referenceColumnName = "user_id",
             getEntityMethod = true,
             entityMethodName = "rolePatientVO",
             getReferenceEntityMethod = true,
             referenceEntityMethodName = "patientProgramVO"
     )
     @Unique
-    protected String patientId;
+    protected String userId;
 
     @Barnacle
     @ColumnName("program_id")
@@ -29,7 +29,7 @@ public class PatientProgramVOF implements Serializable {
     @ForeignKey(
             foreignKeyName = "fk_program_id",
             referenceTableName = "program",
-            referenceColumnName = "program_id",
+            referenceColumnName = "id",
             getEntityMethod = true,
             entityMethodName = "programVO"
     )

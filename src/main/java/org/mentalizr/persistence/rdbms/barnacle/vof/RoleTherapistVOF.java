@@ -9,18 +9,18 @@ import java.io.Serializable;
 public class RoleTherapistVOF implements Serializable {
 
     @Barnacle
-    @ColumnName("id")
+    @ColumnName("user_id")
     @PrimaryKey
     @ForeignKey(
             foreignKeyName = "fk_therapist_user_id",
             referenceTableName = "user",
-            referenceColumnName = "user_id",
+            referenceColumnName = "id",
             getEntityMethod = true,
             entityMethodName = "therapistUserVO",
             getReferenceEntityMethod = true,
             referenceEntityMethodName = "roleTherapistVO"
     )
-    protected String id;
+    protected String userId;
 
     @Barnacle
     protected String title;

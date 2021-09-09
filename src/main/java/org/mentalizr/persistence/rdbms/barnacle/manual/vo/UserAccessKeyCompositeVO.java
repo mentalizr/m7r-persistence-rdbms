@@ -29,7 +29,7 @@ public class UserAccessKeyCompositeVO {
     }
 
     public String getUserId() {
-        return this.userVO.getUserId();
+        return this.userVO.getId();
     }
 
     public boolean isActive() {
@@ -49,7 +49,7 @@ public class UserAccessKeyCompositeVO {
     }
 
     public RolePatientVO getRolePatientVO() throws DataSourceException {
-        List<RolePatientVO> rolePatientVOs = RolePatientDAO.findByFk_patient_user_id(this.userVO.getUserId());
+        List<RolePatientVO> rolePatientVOs = RolePatientDAO.findByFk_patient_user_id(this.userVO.getId());
         if (rolePatientVOs.size() == 0) throw new IllegalStateException("UserLogin not in role 'patient'.");
         return rolePatientVOs.get(0);
     }

@@ -12,7 +12,7 @@ public class UserLoginVOF {
     @ForeignKey(
             foreignKeyName = "fk_user_login_user_id",
             referenceTableName = "user",
-            referenceColumnName = "user_id",
+            referenceColumnName = "id",
             getEntityMethod = true,
             entityMethodName = "userVO",
             getReferenceEntityMethod = true,

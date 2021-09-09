@@ -59,8 +59,8 @@ public class UserLoginCompositeDAO {
         for (RolePatientVO rolePatientVO : rolePatientVOs) {
 
             try {
-                UserLoginVO userLoginVO = UserLoginDAO.load(rolePatientVO.getId());
-                UserVO userVO = UserDAO.load(rolePatientVO.getId());
+                UserLoginVO userLoginVO = UserLoginDAO.load(rolePatientVO.getUserId());
+                UserVO userVO = UserDAO.load(rolePatientVO.getUserId());
 
                 UserLoginCompositeVO userLoginCompositeVO = new UserLoginCompositeVO(userVO, userLoginVO);
                 userLoginCompositeVOs.add(userLoginCompositeVO);

@@ -10,9 +10,8 @@ import java.util.Date;
 public class UserVOF implements Serializable {
 
     @Barnacle
-    @ColumnName("user_id")
     @PrimaryKey
-    protected String userId;
+    protected String id;
 
     @Barnacle
     protected boolean active;

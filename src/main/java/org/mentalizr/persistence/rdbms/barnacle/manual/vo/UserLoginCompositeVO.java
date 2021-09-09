@@ -28,7 +28,7 @@ public class UserLoginCompositeVO {
     }
 
     public String getUserId() {
-        return this.userVO.getUserId();
+        return this.userVO.getId();
     }
 
     public boolean isActive() {
@@ -68,31 +68,31 @@ public class UserLoginCompositeVO {
     }
 
     public boolean isInRolePatient() throws DataSourceException {
-        return RolePatientDAO.findByFk_patient_user_id(this.userVO.getUserId()).size() > 0;
+        return RolePatientDAO.findByFk_patient_user_id(this.userVO.getId()).size() > 0;
     }
 
     public RolePatientVO getRolePatientVO() throws DataSourceException {
-        List<RolePatientVO> rolePatientVOs = RolePatientDAO.findByFk_patient_user_id(this.userVO.getUserId());
+        List<RolePatientVO> rolePatientVOs = RolePatientDAO.findByFk_patient_user_id(this.userVO.getId());
         if (rolePatientVOs.size() == 0) throw new IllegalStateException("UserLogin not in role 'patient'.");
         return rolePatientVOs.get(0);
     }
 
     public boolean isInRoleTherapist() throws DataSourceException {
-        return RoleTherapistDAO.findByFk_therapist_user_id(this.userVO.getUserId()).size() > 0;
+        return RoleTherapistDAO.findByFk_therapist_user_id(this.userVO.getId()).size() > 0;
     }
 
     public RoleTherapistVO getRoleTherapistVO() throws DataSourceException {
-        List<RoleTherapistVO> roleTherapistVOs = RoleTherapistDAO.findByFk_therapist_user_id(this.userVO.getUserId());
+        List<RoleTherapistVO> roleTherapistVOs = RoleTherapistDAO.findByFk_therapist_user_id(this.userVO.getId());
         if (roleTherapistVOs.size() == 0) throw new IllegalStateException("UserLogin not in role 'therapist'.");
         return roleTherapistVOs.get(0);
     }
 
     public boolean isInRoleAdmin() throws DataSourceException {
-        return RoleAdminDAO.findByFk_admin_user_id(this.userVO.getUserId()).size() > 0;
+        return RoleAdminDAO.findByFk_admin_user_id(this.userVO.getId()).size() > 0;
     }
 
     public RoleAdminVO getRoleAdminVO() throws DataSourceException {
-        List<RoleAdminVO> roleAdminVOs = RoleAdminDAO.findByFk_admin_user_id(this.userVO.getUserId());
+        List<RoleAdminVO> roleAdminVOs = RoleAdminDAO.findByFk_admin_user_id(this.userVO.getId());
         if (roleAdminVOs.size() == 0) throw new IllegalStateException("UserLogin not in role 'admin'.");
         return roleAdminVOs.get(0);
     }

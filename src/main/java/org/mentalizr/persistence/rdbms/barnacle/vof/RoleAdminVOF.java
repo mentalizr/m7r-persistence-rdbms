@@ -9,17 +9,17 @@ import java.io.Serializable;
 public class RoleAdminVOF implements Serializable {
 
     @Barnacle
-    @ColumnName("id")
+    @ColumnName("user_id")
     @PrimaryKey
     @ForeignKey(
             foreignKeyName = "fk_admin_user_id",
             referenceTableName = "user",
-            referenceColumnName = "user_id",
+            referenceColumnName = "id",
             getEntityMethod = true,
             entityMethodName = "adminUserVO",
             getReferenceEntityMethod = true,
             referenceEntityMethodName = "roleAdminVO"
     )
-    protected String id;
+    protected String userId;
 
 }
