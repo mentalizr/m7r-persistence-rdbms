@@ -54,7 +54,9 @@ public class UserAccessKeyPatientCompositeDAO {
         return userAccessKeyPatientCompositeVOs;
     }
 
-    public static void delete(String userId) throws DataSourceException {
+    public static void delete(String userId) throws DataSourceException, EntityNotFoundException {
+        PatientProgramVO patientProgramVO = PatientProgramDAO.findByUk_user_id(userId);
+        PatientProgramDAO.delete(patientProgramVO.getPK());
         RolePatientDAO.delete(userId);
         UserAccessKeyCompositeDAO.delete(userId);
     }
