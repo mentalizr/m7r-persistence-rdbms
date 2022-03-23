@@ -1,20 +1,15 @@
 package org.mentalizr.persistence.rdbms.userAdmin;
 
-import de.mkammerer.argon2.Argon2;
-import de.mkammerer.argon2.Argon2Factory;
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.DataSourceException;
 import org.mentalizr.persistence.rdbms.barnacle.manual.dao.UserLoginCompositeDAO;
 import org.mentalizr.persistence.rdbms.barnacle.manual.vo.UserLoginCompositeVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserLoginVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserVO;
+import org.mentalizr.persistence.rdbms.utils.Argon2Hash;
 
 import java.util.UUID;
 
 public class UserLogin {
-
-    private static final int HASH_ITERATIONS = 20;
-    private static final int HASH_MEMORY_KIBIBYTE = 65536;
-    private static final int HASH_PARALLELISM = 1;
 
     public static UserLoginCompositeVO add(
             boolean active,
@@ -27,7 +22,7 @@ public class UserLogin {
     ) throws DataSourceException {
 
         String userUUID = UUID.randomUUID().toString();
-        String passwordHash = getHash(password);
+        String passwordHash = Argon2Hash.getHash(password);
 
         return restore(
                 userUUID,
@@ -68,15 +63,6 @@ public class UserLogin {
         UserLoginCompositeDAO.create(userLoginCompositeVO);
 
         return userLoginCompositeVO;
-    }
-
-    private static String getHash(char[] password) {
-        Argon2 argon2 = Argon2Factory.create();
-        try {
-            return argon2.hash(HASH_ITERATIONS, HASH_MEMORY_KIBIBYTE, HASH_PARALLELISM, password);
-        } finally {
-            argon2.wipeArray(password);
-        }
     }
 
 }

@@ -44,14 +44,14 @@ dependencies {
 
     implementation 'com.github.arthurpicht:utils-core:1.2.1'
 
-    implementation 'ch.qos.logback:logback-classic:1.2.3'
-    api 'de.mkammerer:argon2-jvm:2.5'
+    implementation 'ch.qos.logback:logback-classic:1.2.11'
+    api 'de.mkammerer:argon2-jvm:2.11'
 
     implementation 'com.github.arthurpicht:Barnacle:master-SNAPSHOT'
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.4.3'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 }
 
 test {
