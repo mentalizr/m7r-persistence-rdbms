@@ -23,4 +23,8 @@ public class UserVOF implements Serializable {
     @Barnacle
     protected Date lastActive;
 
+    @Barnacle
+    @ColumnName("policy_consent")
+    protected Date policyConsent;
+
 }
