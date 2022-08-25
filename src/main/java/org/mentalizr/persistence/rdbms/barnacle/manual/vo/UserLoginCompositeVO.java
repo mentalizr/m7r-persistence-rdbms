@@ -5,7 +5,9 @@ import org.mentalizr.persistence.rdbms.barnacle.dao.RoleAdminDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.RolePatientDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.RoleTherapistDAO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.*;
+import org.mentalizr.persistence.rdbms.utils.EpochMillis;
 
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -35,12 +37,14 @@ public class UserLoginCompositeVO {
         return this.userVO.getActive();
     }
 
-    public Date getFirstActive() {
-        return this.userVO.getFirstActive();
+    public ZonedDateTime getFirstActive() {
+        if (this.userVO.getFirstActive() == null) return null;
+        return EpochMillis.asZonedDateTimeBerlin(this.userVO.getFirstActive());
     }
 
-    public Date getLastActive() {
-        return this.userVO.getLastActive();
+    public ZonedDateTime getLastActive() {
+        if (this.userVO.getLastActive() == null) return null;
+        return EpochMillis.asZonedDateTimeBerlin(this.userVO.getLastActive());
     }
 
     public String getUsername() {

@@ -5,6 +5,7 @@ import org.mentalizr.persistence.rdbms.barnacle.vo.RolePatientVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserAccessKeyVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserVO;
 
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 public class UserAccessKeyPatientCompositeVO {
@@ -42,11 +43,11 @@ public class UserAccessKeyPatientCompositeVO {
         return this.userAccessKeyCompositeVO.isActive();
     }
 
-    public Date getFirstActive() {
+    public ZonedDateTime getFirstActive() {
         return this.userAccessKeyCompositeVO.getFirstActive();
     }
 
-    public Date getLastActive() {
+    public ZonedDateTime getLastActive() {
         return this.userAccessKeyCompositeVO.getLastActive();
     }
 

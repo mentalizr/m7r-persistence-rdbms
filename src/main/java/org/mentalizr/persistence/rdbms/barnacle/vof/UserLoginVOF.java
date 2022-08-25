@@ -51,7 +51,7 @@ public class UserLoginVOF {
 
     @Barnacle
     @ColumnName("email_confirmation")
-    protected Date emailConfirmation;
+    protected Long emailConfirmation;
 
     @Barnacle
     @ColumnName("email_conf_token")

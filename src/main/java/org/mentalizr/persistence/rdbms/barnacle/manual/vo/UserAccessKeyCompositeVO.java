@@ -6,7 +6,9 @@ import org.mentalizr.persistence.rdbms.barnacle.vo.RolePatientVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserAccessKeyVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserLoginVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserVO;
+import org.mentalizr.persistence.rdbms.utils.EpochMillis;
 
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -36,12 +38,14 @@ public class UserAccessKeyCompositeVO {
         return this.userVO.getActive();
     }
 
-    public Date getFirstActive() {
-        return this.userVO.getFirstActive();
+    public ZonedDateTime getFirstActive() {
+        if (this.userVO.getFirstActive() == null) return null;
+        return EpochMillis.asZonedDateTimeBerlin(this.userVO.getFirstActive());
     }
 
-    public Date getLastActive() {
-        return this.userVO.getLastActive();
+    public ZonedDateTime getLastActive() {
+        if (this.userVO.getLastActive() == null) return null;
+        return EpochMillis.asZonedDateTimeBerlin(this.userVO.getLastActive());
     }
 
     public String getAccessKey() {

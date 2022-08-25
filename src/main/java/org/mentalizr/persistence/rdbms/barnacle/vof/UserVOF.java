@@ -18,13 +18,13 @@ public class UserVOF implements Serializable {
     // TODO default: true
 
     @Barnacle
-    protected Date firstActive;
+    protected Long firstActive;
 
     @Barnacle
-    protected Date lastActive;
+    protected Long lastActive;
 
     @Barnacle
     @ColumnName("policy_consent")
-    protected Date policyConsent;
+    protected Long policyConsent;
 
 }
