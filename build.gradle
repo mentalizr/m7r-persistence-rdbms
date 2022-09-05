@@ -42,6 +42,8 @@ task barnacle(type: Exec) {
 
 dependencies {
 
+    implementation 'org.mentalizr:m7r-commons:0.0.1-SNAPSHOT'
+
     implementation 'com.github.arthurpicht:utils-core:1.2.1'
 
     implementation 'ch.qos.logback:logback-classic:1.2.11'

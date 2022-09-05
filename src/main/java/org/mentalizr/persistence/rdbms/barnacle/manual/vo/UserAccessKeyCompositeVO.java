@@ -1,21 +1,19 @@
 package org.mentalizr.persistence.rdbms.barnacle.manual.vo;
 
+import org.mentalizr.commons.EpochMillis;
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.DataSourceException;
 import org.mentalizr.persistence.rdbms.barnacle.dao.RolePatientDAO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.RolePatientVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserAccessKeyVO;
-import org.mentalizr.persistence.rdbms.barnacle.vo.UserLoginVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserVO;
-import org.mentalizr.persistence.rdbms.utils.EpochMillis;
 
 import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.List;
 
 public class UserAccessKeyCompositeVO {
 
-    private UserVO userVO;
-    private UserAccessKeyVO userAccessKeyVO;
+    private final UserVO userVO;
+    private final UserAccessKeyVO userAccessKeyVO;
 
     public UserAccessKeyCompositeVO(UserVO userVO, UserAccessKeyVO userAccessKeyVO) {
         this.userVO = userVO;
@@ -57,6 +55,5 @@ public class UserAccessKeyCompositeVO {
         if (rolePatientVOs.size() == 0) throw new IllegalStateException("UserLogin not in role 'patient'.");
         return rolePatientVOs.get(0);
     }
-
 
 }

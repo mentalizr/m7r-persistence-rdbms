@@ -5,10 +5,7 @@ import org.mentalizr.persistence.rdbms.barnacle.dao.RoleAdminDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.RolePatientDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.RoleTherapistDAO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.*;
-import org.mentalizr.persistence.rdbms.utils.EpochMillis;
 
-import java.time.ZonedDateTime;
-import java.util.Date;
 import java.util.List;
 
 public class UserLoginCompositeVO {
@@ -33,43 +30,48 @@ public class UserLoginCompositeVO {
         return this.userVO.getId();
     }
 
-    public boolean isActive() {
-        return this.userVO.getActive();
-    }
+//    public boolean isActive() {
+//        return this.userVO.getActive();
+//    }
 
-    public ZonedDateTime getFirstActive() {
-        if (this.userVO.getFirstActive() == null) return null;
-        return EpochMillis.asZonedDateTimeBerlin(this.userVO.getFirstActive());
-    }
+//    public ZonedDateTime getFirstActive() {
+//        if (this.userVO.getFirstActive() == null) return null;
+//        return EpochMillis.asZonedDateTimeBerlin(this.userVO.getFirstActive());
+//    }
+//
+//    public ZonedDateTime getLastActive() {
+//        if (this.userVO.getLastActive() == null) return null;
+//        return EpochMillis.asZonedDateTimeBerlin(this.userVO.getLastActive());
+//    }
+//
+//    public ZonedDateTime getPolicyConsent() {
+//        if (this.userVO.getPolicyConsent() == null) return null;
+//        return EpochMillis.asZonedDateTimeBerlin(this.userVO.getPolicyConsent());
+//    }
 
-    public ZonedDateTime getLastActive() {
-        if (this.userVO.getLastActive() == null) return null;
-        return EpochMillis.asZonedDateTimeBerlin(this.userVO.getLastActive());
-    }
-
-    public String getUsername() {
-        return this.userLoginVO.getUsername();
-    }
-
-    public String getPasswordHash() {
-        return this.userLoginVO.getPasswordHash();
-    }
-
-    public String getEmail() {
-        return this.userLoginVO.getEmail();
-    }
-
-    public String getFirstName() {
-        return this.userLoginVO.getFirstName();
-    }
-
-    public String getLastName() {
-        return this.userLoginVO.getLastName();
-    }
-
-    public int getGender() {
-        return this.userLoginVO.getGender();
-    }
+//    public String getUsername() {
+//        return this.userLoginVO.getUsername();
+//    }
+//
+//    public String getPasswordHash() {
+//        return this.userLoginVO.getPasswordHash();
+//    }
+//
+//    public String getEmail() {
+//        return this.userLoginVO.getEmail();
+//    }
+//
+//    public String getFirstName() {
+//        return this.userLoginVO.getFirstName();
+//    }
+//
+//    public String getLastName() {
+//        return this.userLoginVO.getLastName();
+//    }
+//
+//    public int getGender() {
+//        return this.userLoginVO.getGender();
+//    }
 
     public boolean isInRolePatient() throws DataSourceException {
         return RolePatientDAO.findByFk_patient_user_id(this.userVO.getId()).size() > 0;
