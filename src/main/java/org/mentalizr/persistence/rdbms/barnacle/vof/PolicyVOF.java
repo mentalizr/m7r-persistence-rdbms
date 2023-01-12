@@ -1,27 +1,30 @@
 package org.mentalizr.persistence.rdbms.barnacle.vof;
 
 import de.arthurpicht.barnacle.annotations.Annotations.*;
-import java.io.Serializable;
 
 @Barnacle
-@TableName("role_therapist")
-public class RoleTherapistVOF implements Serializable {
+@TableName("policy")
+public class PolicyVOF {
 
     @Barnacle
     @ColumnName("user_id")
     @PrimaryKey
     @ForeignKey(
-            foreignKeyName = "fk_therapist_user_id",
+            foreignKeyName = "fk_policy_user_id",
             referenceTableName = "user",
             referenceColumnName = "id",
-            getEntityMethod = true,
-            entityMethodName = "therapistUserVO",
+            getEntityMethod = false,
+//            entityMethodName = "therapistUserVO",
             getReferenceEntityMethod = true,
-            referenceEntityMethodName = "roleTherapistVO"
+            referenceEntityMethodName = "policyVO"
     )
     protected String userId;
 
     @Barnacle
-    protected String title;
+    @PrimaryKey
+    protected String version;
+
+    @Barnacle
+    protected Long consent;
 
 }
