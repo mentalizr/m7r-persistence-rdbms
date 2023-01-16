@@ -3,7 +3,6 @@ package org.mentalizr.persistence.rdbms.barnacle.vof;
 import de.arthurpicht.barnacle.annotations.Annotations.*;
 
 import java.io.Serializable;
-import java.util.Date;
 
 @Barnacle
 @VobFactory
