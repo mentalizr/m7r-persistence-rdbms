@@ -22,8 +22,8 @@ public class UserVOF implements Serializable {
     @Barnacle
     protected Long lastActive;
 
-    @Barnacle
-    @ColumnName("policy_consent")
-    protected Long policyConsent;
+//    @Barnacle
+//    @ColumnName("policy_consent")
+//    protected Long policyConsent;
 
 }

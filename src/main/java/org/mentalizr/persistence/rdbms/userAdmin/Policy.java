@@ -1,13 +1,9 @@
 package org.mentalizr.persistence.rdbms.userAdmin;
 
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.DataSourceException;
-import org.mentalizr.persistence.rdbms.barnacle.dao.PolicyDAO;
-import org.mentalizr.persistence.rdbms.barnacle.dao.ProgramDAO;
-import org.mentalizr.persistence.rdbms.barnacle.vo.PolicyPK;
-import org.mentalizr.persistence.rdbms.barnacle.vo.PolicyVO;
-import org.mentalizr.persistence.rdbms.barnacle.vo.ProgramVO;
-
-import static de.arthurpicht.utils.core.assertion.MethodPreconditions.assertArgumentNotNullAndNotEmpty;
+import org.mentalizr.persistence.rdbms.barnacle.dao.PolicyConsentDAO;
+import org.mentalizr.persistence.rdbms.barnacle.vo.PolicyConsentPK;
+import org.mentalizr.persistence.rdbms.barnacle.vo.PolicyConsentVO;
 
 public class Policy {
 
@@ -16,11 +12,11 @@ public class Policy {
             String version,
             Long consent) throws DataSourceException {
 
-        PolicyPK policyPK = new PolicyPK(userId, version);
-        PolicyVO policyVO = new PolicyVO(policyPK);
+        PolicyConsentPK policyConsentPK = new PolicyConsentPK(userId, version);
+        PolicyConsentVO policyVO = new PolicyConsentVO(policyConsentPK);
         policyVO.setConsent(consent);
 
-        PolicyDAO.create(policyVO);
+        PolicyConsentDAO.create(policyVO);
     }
 
 }

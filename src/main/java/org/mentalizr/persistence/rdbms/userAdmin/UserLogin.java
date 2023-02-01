@@ -21,15 +21,12 @@ public class UserLogin {
             String lastname,
             int gender,
             boolean secondFA,
-            boolean requirePolicyConsent,
             boolean requireEmailConfirmation,
             boolean renewPasswordRequired
     ) throws DataSourceException {
 
         String userUUID = UUID.randomUUID().toString();
         String passwordHash = Argon2Hash.getHash(password);
-
-        Long policyConsent = requirePolicyConsent ? null : 0L;
 
         Long emailConfirmation;
         String emailConfirmationToken;
@@ -52,7 +49,6 @@ public class UserLogin {
                 active,
                 null,
                 null,
-                policyConsent,
                 username,
                 passwordHash,
                 email,
@@ -72,7 +68,6 @@ public class UserLogin {
             boolean active,
             Long firstActive,
             Long lastActive,
-            Long policyConsent,
             String username,
             String passwordHash,
             String email,
@@ -90,7 +85,6 @@ public class UserLogin {
         userVO.setActive(active);
         userVO.setFirstActive(firstActive);
         userVO.setLastActive(lastActive);
-        userVO.setPolicyConsent(policyConsent);
 
         UserLoginVO userLoginVO = new UserLoginVO(userUUID);
         userLoginVO.setUsername(username);
