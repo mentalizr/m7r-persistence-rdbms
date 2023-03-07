@@ -1,0 +1,11 @@
+Quick Instruction how to Update a Database running on a Docker Container via a SQL-File.
+
+1. For ease go to the local Path of your SQL-File.
+   -> cd .../rdbms/migration
+2. Push the SQL-File you wish to run on the Database-Container.
+   You can find the Container with the Command 'Docker ps'
+   -> docker cp <local Filepath> <Container ID>:/tmp/<filename>
+3. Enter the bash on the ContainerID you forwarded the file to.
+   -> docker exec -it <Container ID> bash
+4. Run the SQL-File via the mysql Command.
+   -> mysql --user=<username> --password=<password> <db_name> < /tmp/<filename>
