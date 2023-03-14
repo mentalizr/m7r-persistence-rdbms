@@ -1,4 +1,0 @@
-Quick Instruction how to Update a Database running on a Docker Container via a SQL-File.
-
-1. cd .../rdbms/migration
-2. mysql --user=<username> --password=<password> <db_name> -h <ip> < <filepath>
