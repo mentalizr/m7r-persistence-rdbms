@@ -37,7 +37,7 @@ task barnacle(type: Exec) {
 
     mkdir "$buildDir/sql"
 
-    commandLine "barnacle", "$projectDir/src/main/resources/barnacle.conf"
+    commandLine "barnacle", "--verbose", "--configfile", "$projectDir/src/main/resources/barnacle.conf", "generate"
 }
 
 dependencies {
