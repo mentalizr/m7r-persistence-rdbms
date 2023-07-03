@@ -6,6 +6,7 @@ import java.util.Date;
 
 @Barnacle
 @TableName("user_login")
+@SerializableVo(serialVersionUID = 2023070301L)
 public class UserLoginVOF {
 
     @Barnacle

@@ -4,6 +4,7 @@ import de.arthurpicht.barnacle.annotations.Annotations.*;
 
 @Barnacle
 @TableName("policy_consent")
+@SerializableVo(serialVersionUID = 2023070301L)
 public class PolicyConsentVOF {
 
     @Barnacle

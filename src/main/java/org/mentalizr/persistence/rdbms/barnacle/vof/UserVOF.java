@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 @Barnacle
 @VobFactory
+@SerializableVo(serialVersionUID = 2023070301L)
 public class UserVOF implements Serializable {
 
     @Barnacle
@@ -21,9 +22,5 @@ public class UserVOF implements Serializable {
 
     @Barnacle
     protected Long lastActive;
-
-//    @Barnacle
-//    @ColumnName("policy_consent")
-//    protected Long policyConsent;
 
 }

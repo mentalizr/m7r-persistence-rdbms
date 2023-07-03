@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 @Barnacle
 @TableName("role_admin")
+@SerializableVo(serialVersionUID = 2023070301L)
 public class RoleAdminVOF implements Serializable {
 
     @Barnacle

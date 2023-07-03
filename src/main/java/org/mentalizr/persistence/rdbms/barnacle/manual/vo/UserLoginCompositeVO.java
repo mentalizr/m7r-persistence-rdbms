@@ -6,9 +6,12 @@ import org.mentalizr.persistence.rdbms.barnacle.dao.RolePatientDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.RoleTherapistDAO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.*;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class UserLoginCompositeVO {
+public class UserLoginCompositeVO implements Serializable {
+
+    private static final Long serialVersionUID = 2023070301L;
 
     private final UserVO userVO;
     private final UserLoginVO userLoginVO;

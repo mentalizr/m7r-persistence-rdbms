@@ -4,6 +4,7 @@ import de.arthurpicht.barnacle.annotations.Annotations.*;
 
 @Barnacle
 @TableName("user_access_key")
+@SerializableVo(serialVersionUID = 2023070301L)
 public class UserAccessKeyVOF {
 
     @Barnacle
