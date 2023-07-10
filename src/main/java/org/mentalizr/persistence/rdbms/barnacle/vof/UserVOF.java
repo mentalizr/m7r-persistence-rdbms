@@ -3,10 +3,10 @@ package org.mentalizr.persistence.rdbms.barnacle.vof;
 import de.arthurpicht.barnacle.annotations.Annotations.*;
 
 import java.io.Serializable;
-import java.util.Date;
 
 @Barnacle
 @VobFactory
+@SerializableVo(serialVersionUID = 2023070301L)
 public class UserVOF implements Serializable {
 
     @Barnacle
@@ -18,9 +18,9 @@ public class UserVOF implements Serializable {
     // TODO default: true
 
     @Barnacle
-    protected Date firstActive;
+    protected Long firstActive;
 
     @Barnacle
-    protected Date lastActive;
+    protected Long lastActive;
 
 }

@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 @Barnacle
 @TableName("role_patient")
+@SerializableVo(serialVersionUID = 2023070301L)
 public class RolePatientVOF implements Serializable {
 
     @Barnacle

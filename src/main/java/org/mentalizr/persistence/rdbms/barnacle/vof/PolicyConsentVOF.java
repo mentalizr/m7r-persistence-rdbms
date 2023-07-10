@@ -3,27 +3,29 @@ package org.mentalizr.persistence.rdbms.barnacle.vof;
 import de.arthurpicht.barnacle.annotations.Annotations.*;
 
 @Barnacle
-@TableName("user_access_key")
+@TableName("policy_consent")
 @SerializableVo(serialVersionUID = 2023070301L)
-public class UserAccessKeyVOF {
+public class PolicyConsentVOF {
 
     @Barnacle
     @ColumnName("user_id")
     @PrimaryKey
     @ForeignKey(
-            foreignKeyName = "fk_user_access_key_user_id",
+            foreignKeyName = "fk_policy_consent_user_id",
             referenceTableName = "user",
             referenceColumnName = "id",
-            getEntityMethod = true,
-            entityMethodName = "userVO",
+            getEntityMethod = false,
+//            entityMethodName = "therapistUserVO",
             getReferenceEntityMethod = true,
-            referenceEntityMethodName = "userAccessKeyVO"
+            referenceEntityMethodName = "policyConsentVOs"
     )
     protected String userId;
 
     @Barnacle
-    @NotNull
-    @Unique
-    protected String accessKey;
+    @PrimaryKey
+    protected String version;
+
+    @Barnacle
+    protected Long consent;
 
 }

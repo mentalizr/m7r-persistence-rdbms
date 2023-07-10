@@ -2,8 +2,11 @@ package org.mentalizr.persistence.rdbms.barnacle.vof;
 
 import de.arthurpicht.barnacle.annotations.Annotations.*;
 
+import java.util.Date;
+
 @Barnacle
 @TableName("user_login")
+@SerializableVo(serialVersionUID = 2023070301L)
 public class UserLoginVOF {
 
     @Barnacle
@@ -43,5 +46,25 @@ public class UserLoginVOF {
     @Barnacle
     protected int gender;
 
+    @Barnacle
+    @ColumnName("second_fa")
+    protected boolean secondFA;
+
+    @Barnacle
+    @ColumnName("email_confirmation")
+    protected Long emailConfirmation;
+
+    @Barnacle
+    @ColumnName("email_conf_token")
+    @Unique
+    protected String emailConfToken;
+
+    @Barnacle
+    @ColumnName("email_conf_code")
+    protected String emailConfCode;
+
+    @Barnacle
+    @ColumnName("renew_pw_req")
+    protected boolean renewPasswordRequired;
 
 }

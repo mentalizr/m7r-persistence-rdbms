@@ -6,10 +6,12 @@ import org.mentalizr.persistence.rdbms.barnacle.dao.RolePatientDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.RoleTherapistDAO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.*;
 
-import java.util.Date;
+import java.io.Serializable;
 import java.util.List;
 
-public class UserLoginCompositeVO {
+public class UserLoginCompositeVO implements Serializable {
+
+    private static final Long serialVersionUID = 2023070301L;
 
     private final UserVO userVO;
     private final UserLoginVO userLoginVO;
@@ -29,42 +31,6 @@ public class UserLoginCompositeVO {
 
     public String getUserId() {
         return this.userVO.getId();
-    }
-
-    public boolean isActive() {
-        return this.userVO.getActive();
-    }
-
-    public Date getFirstActive() {
-        return this.userVO.getFirstActive();
-    }
-
-    public Date getLastActive() {
-        return this.userVO.getLastActive();
-    }
-
-    public String getUsername() {
-        return this.userLoginVO.getUsername();
-    }
-
-    public String getPasswordHash() {
-        return this.userLoginVO.getPasswordHash();
-    }
-
-    public String getEmail() {
-        return this.userLoginVO.getEmail();
-    }
-
-    public String getFirstName() {
-        return this.userLoginVO.getFirstName();
-    }
-
-    public String getLastName() {
-        return this.userLoginVO.getLastName();
-    }
-
-    public int getGender() {
-        return this.userLoginVO.getGender();
     }
 
     public boolean isInRolePatient() throws DataSourceException {

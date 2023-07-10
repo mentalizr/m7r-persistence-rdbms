@@ -5,9 +5,13 @@ import org.mentalizr.persistence.rdbms.barnacle.vo.RolePatientVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserAccessKeyVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserVO;
 
+import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
-public class UserAccessKeyPatientCompositeVO {
+public class UserAccessKeyPatientCompositeVO implements Serializable {
+
+    private static final Long serialVersionUID = 2023070301L;
 
     private final UserAccessKeyCompositeVO userAccessKeyCompositeVO;
     private final RolePatientVO rolePatientVO;
@@ -42,11 +46,11 @@ public class UserAccessKeyPatientCompositeVO {
         return this.userAccessKeyCompositeVO.isActive();
     }
 
-    public Date getFirstActive() {
+    public ZonedDateTime getFirstActive() {
         return this.userAccessKeyCompositeVO.getFirstActive();
     }
 
-    public Date getLastActive() {
+    public ZonedDateTime getLastActive() {
         return this.userAccessKeyCompositeVO.getLastActive();
     }
 
