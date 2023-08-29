@@ -39,15 +39,27 @@ public class UserAccessKeyCompositeVO implements Serializable {
         return this.userVO.getActive();
     }
 
-    public ZonedDateTime getFirstActive() {
-        if (this.userVO.getFirstActive() == null) return null;
-        return EpochMillis.asZonedDateTimeBerlin(this.userVO.getFirstActive());
+    public Long getCreation() {
+        return this.userVO.getCreation();
     }
 
-    public ZonedDateTime getLastActive() {
-        if (this.userVO.getLastActive() == null) return null;
-        return EpochMillis.asZonedDateTimeBerlin(this.userVO.getLastActive());
+    public Long getFirstActive() {
+        return this.userVO.getFirstActive();
     }
+
+    public Long getLastActive() {
+        return this.userVO.getLastActive();
+    }
+
+//    public ZonedDateTime getFirstActive() {
+//        if (this.userVO.getFirstActive() == null) return null;
+//        return EpochMillis.asZonedDateTimeBerlin(this.userVO.getFirstActive());
+//    }
+//
+//    public ZonedDateTime getLastActive() {
+//        if (this.userVO.getLastActive() == null) return null;
+//        return EpochMillis.asZonedDateTimeBerlin(this.userVO.getLastActive());
+//    }
 
     public String getAccessKey() {
         return this.userAccessKeyVO.getAccessKey();

@@ -27,6 +27,7 @@ public class UserLogin {
 
         String userUUID = UUID.randomUUID().toString();
         String passwordHash = Argon2Hash.getHash(password);
+        long creation = System.currentTimeMillis();
 
         Long emailConfirmation;
         String emailConfirmationToken;
@@ -47,6 +48,7 @@ public class UserLogin {
         return restore(
                 userUUID,
                 active,
+                creation,
                 null,
                 null,
                 username,
@@ -66,6 +68,7 @@ public class UserLogin {
     public static UserLoginCompositeVO restore(
             String userUUID,
             boolean active,
+            Long creation,
             Long firstActive,
             Long lastActive,
             String username,
@@ -83,6 +86,7 @@ public class UserLogin {
 
         UserVO userVO = new UserVO(userUUID);
         userVO.setActive(active);
+        userVO.setCreation(creation);
         userVO.setFirstActive(firstActive);
         userVO.setLastActive(lastActive);
 

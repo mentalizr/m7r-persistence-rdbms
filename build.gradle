@@ -80,3 +80,5 @@ barnacle.dependsOn(copyBarnacleConf)
 jar.dependsOn(barnacle)
 tasks.findByName('jar').mustRunAfter('barnacle')
 tasks.findByName('barnacle').mustRunAfter('copyBarnacleConf')
+
+defaultTasks 'jar'

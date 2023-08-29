@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 @Barnacle
 @VobFactory
-@SerializableVo(serialVersionUID = 2023070301L)
+@SerializableVo(serialVersionUID = 2023082901L)
 public class UserVOF implements Serializable {
 
     @Barnacle
@@ -16,6 +16,9 @@ public class UserVOF implements Serializable {
     @Barnacle
     protected boolean active;
     // TODO default: true
+
+    @Barnacle
+    protected Long creation;
 
     @Barnacle
     protected Long firstActive;

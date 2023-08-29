@@ -46,13 +46,25 @@ public class UserAccessKeyPatientCompositeVO implements Serializable {
         return this.userAccessKeyCompositeVO.isActive();
     }
 
-    public ZonedDateTime getFirstActive() {
+    public Long getCreation() {
+        return this.userAccessKeyCompositeVO.getCreation();
+    }
+
+    public Long getFirstActive() {
         return this.userAccessKeyCompositeVO.getFirstActive();
     }
 
-    public ZonedDateTime getLastActive() {
+    public Long getLastActive() {
         return this.userAccessKeyCompositeVO.getLastActive();
     }
+
+//    public ZonedDateTime getFirstActive() {
+//        return this.userAccessKeyCompositeVO.getFirstActive();
+//    }
+//
+//    public ZonedDateTime getLastActive() {
+//        return this.userAccessKeyCompositeVO.getLastActive();
+//    }
 
     public String getAccessKey() {
         return this.userAccessKeyCompositeVO.getAccessKey();
