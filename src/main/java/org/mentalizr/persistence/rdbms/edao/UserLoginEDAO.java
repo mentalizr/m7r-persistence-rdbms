@@ -7,13 +7,13 @@ import org.mentalizr.persistence.rdbms.barnacle.vo.UserLoginVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class UserLoginEDAO {
 
     private static final Logger logger = LoggerFactory.getLogger(UserLoginEDAO.class);
+
+    private static final String UPDATE_PASSWORD_HASH_STATEMENT = "UPDATE user_login SET password_hash = ? WHERE user_id = ?";
 
     public static void updatePasswordHash(String userId, String passwordHash) throws DataSourceException {
         Connection connection = ConnectionManager.openConnection(UserLoginDAO.class);
@@ -27,14 +27,12 @@ public class UserLoginEDAO {
     }
 
     public static void updatePasswordHash(String userId, String passwordHash, Connection connection) throws SQLException {
-        String sql = "UPDATE " + UserLoginVO.TABLENAME + " SET "
-                + UserLoginVO.PASSWORDHASH + " = " + getValueExpression(passwordHash, "VARCHAR(255)") + ", "
-                + " WHERE "
-                + UserLoginVO.USERID + " = " + getValueExpression(userId, "VARCHAR(255)");
-        logger.debug(sql);
-        Statement statement = connection.createStatement();
-        statement.execute(sql);
-        try { statement.close(); } catch (SQLException ignored) {}
+        PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_PASSWORD_HASH_STATEMENT);
+        preparedStatement.setObject(1, passwordHash, Types.VARCHAR);
+        preparedStatement.setObject(2, userId, Types.VARCHAR);
+        logger.debug(UPDATE_PASSWORD_HASH_STATEMENT + " [" + passwordHash + "][" + userId + "]");
+        preparedStatement.executeUpdate();
+        try { preparedStatement.close(); } catch (SQLException ignored) {}
     }
 
     public static void unsetRenewPasswordRequired(String userId) throws DataSourceException {
