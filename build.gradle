@@ -27,8 +27,11 @@ sourceSets {
     }
 }
 
+
 tasks.register('barnacle', Exec) {
 //    println System.getenv("PATH")
+    dependsOn('copyBarnacleConf')
+
 
     inputs.dir("$rootDir/src/main/java/org/mentalizr/persistence/rdbms/barnacle/vof")
     inputs.file("$rootDir/src/main/resources/barnacle.conf")
@@ -37,7 +40,10 @@ tasks.register('barnacle', Exec) {
 
     mkdir "$buildDir/sql"
 
-    commandLine "barnacle", "--verbose", "--configfile", "$projectDir/src/main/resources/barnacle.conf", "generate"
+    doFirst {
+        commandLine "barnacle", "--verbose", "--configfile", "$projectDir/src/main/resources/barnacle.conf", "generate"
+    }
+
 }
 
 dependencies {
@@ -61,14 +67,16 @@ test {
 }
 
 tasks.register('copyBarnacleConf', Copy) {
-    def barnacleConf = Paths.get("$rootDir").resolve("../../infra/m7r-config/common/barnacle.conf").normalize().toFile()
-    if (!barnacleConf.exists()) throw new GradleException(barnacleConf.absolutePath + " not found.");
 
-    inputs.file(barnacleConf)
-    outputs.file("$rootDir/src/main/resources/barnacle.conf")
+        def barnacleConf = Paths.get("$rootDir").resolve("../../infra/m7r-config/common/barnacle.conf").normalize().toFile()
+        if (!barnacleConf.exists()) throw new GradleException(barnacleConf.absolutePath + " not found.");
 
-    from file(barnacleConf)
-    into "$rootDir/src/main/resources"
+        inputs.file(barnacleConf)
+        outputs.file("$rootDir/src/main/resources/barnacle.conf")
+
+        from file(barnacleConf)
+        into "$rootDir/src/main/resources"
+
 }
 
 clean {
@@ -76,9 +84,17 @@ clean {
     delete "$rootDir/src/main/resources/barnacle.conf"
 }
 
-barnacle.dependsOn(copyBarnacleConf)
-jar.dependsOn(barnacle)
-tasks.findByName('jar').mustRunAfter('barnacle')
-tasks.findByName('barnacle').mustRunAfter('copyBarnacleConf')
+//barnacle.dependsOn(copyBarnacleConf)
+//jar.dependsOn(barnacle)
+//tasks.findByName('jar').mustRunAfter('barnacle')
+//tasks.findByName('barnacle').mustRunAfter('copyBarnacleConf')
+
+compileJava {
+    dependsOn barnacle
+}
+
+processResources {
+    dependsOn copyBarnacleConf
+}
 
 defaultTasks 'jar'
