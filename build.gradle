@@ -24,8 +24,15 @@ sourceSets {
 
 tasks.register('barnacle', Exec) {
 //    println System.getenv("PATH")
-    dependsOn('copyBarnacleConf')
 
+    // Execution failed for task ':barnacle'.
+    // Got problems? This one after changing dependencies?
+    // Caused by: java.io.IOException: Cannot run program "barnacle" (in directory [...]/m7r/core/m7r-persistence-rdbms"):
+    // error=2, Datei oder Verzeichnis nicht gefunden
+    // Solution: kill gradle:
+    // # gradle --stop
+    // # ./gradlew --stop
+    dependsOn('copyBarnacleConf')
 
     inputs.dir("$rootDir/src/main/java/org/mentalizr/persistence/rdbms/barnacle/vof")
     inputs.file("$rootDir/src/main/resources/barnacle.conf")
@@ -41,19 +48,17 @@ tasks.register('barnacle', Exec) {
 }
 
 dependencies {
+    implementation libs.m7r.commons
 
-    implementation 'org.mentalizr:m7r-commons:0.0.1-SNAPSHOT'
+    implementation libs.ap.utils.core
+    implementation libs.ap.barnacle
 
-    implementation 'com.github.arthurpicht:utils-core:1.13.0'
+    implementation libs.qos.logback
+    api libs.mkammerer.argon2
+    implementation libs.mariadb.javaClient
 
-    implementation 'ch.qos.logback:logback-classic:1.4.11'
-    api 'de.mkammerer:argon2-jvm:2.11'
-
-    implementation 'com.github.arthurpicht:Barnacle:0.3.2'
-    implementation 'org.mariadb.jdbc:mariadb-java-client:2.4.3'
-
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+    testImplementation libs.junit.jupiter
+    testRuntimeOnly libs.junit.engine
 }
 
 test {
@@ -61,7 +66,6 @@ test {
 }
 
 tasks.register('copyBarnacleConf', Copy) {
-
         def barnacleConf = Paths.get("$rootDir").resolve("../../infra/m7r-config/common/barnacle.conf").normalize().toFile()
         if (!barnacleConf.exists()) throw new GradleException(barnacleConf.absolutePath + " not found.");
 
@@ -70,18 +74,12 @@ tasks.register('copyBarnacleConf', Copy) {
 
         from file(barnacleConf)
         into "$rootDir/src/main/resources"
-
 }
 
 clean {
     delete "$rootDir/src/main/generated/org"
     delete "$rootDir/src/main/resources/barnacle.conf"
 }
-
-//barnacle.dependsOn(copyBarnacleConf)
-//jar.dependsOn(barnacle)
-//tasks.findByName('jar').mustRunAfter('barnacle')
-//tasks.findByName('barnacle').mustRunAfter('copyBarnacleConf')
 
 compileJava {
     dependsOn barnacle
