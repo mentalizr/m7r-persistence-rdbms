@@ -1,6 +1,5 @@
 package org.mentalizr.persistence.rdbms.barnacle.manual.vo;
 
-import org.mentalizr.commons.EpochMillis;
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.DataSourceException;
 import org.mentalizr.persistence.rdbms.barnacle.dao.RolePatientDAO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.RolePatientVO;
@@ -8,7 +7,6 @@ import org.mentalizr.persistence.rdbms.barnacle.vo.UserAccessKeyVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserVO;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 public class UserAccessKeyCompositeVO implements Serializable {
