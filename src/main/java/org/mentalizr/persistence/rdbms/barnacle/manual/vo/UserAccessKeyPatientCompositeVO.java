@@ -58,14 +58,6 @@ public class UserAccessKeyPatientCompositeVO implements Serializable {
         return this.userAccessKeyCompositeVO.getLastActive();
     }
 
-//    public ZonedDateTime getFirstActive() {
-//        return this.userAccessKeyCompositeVO.getFirstActive();
-//    }
-//
-//    public ZonedDateTime getLastActive() {
-//        return this.userAccessKeyCompositeVO.getLastActive();
-//    }
-
     public String getAccessKey() {
         return this.userAccessKeyCompositeVO.getAccessKey();
     }
@@ -76,6 +68,10 @@ public class UserAccessKeyPatientCompositeVO implements Serializable {
 
     public String getTherapistId() {
         return this.rolePatientVO.getTherapistId();
+    }
+
+    public String getProjectId() {
+        return this.rolePatientVO.getProjectId();
     }
 
     public UserAccessKeyCompositeVO getUserAccessKeyCompositeVO() {
