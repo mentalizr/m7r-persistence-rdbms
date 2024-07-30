@@ -14,6 +14,7 @@ public class PatientProgramEDAO {
 
     private static final Logger logger = LoggerFactory.getLogger(PatientProgramEDAO.class);
 
+    @SuppressWarnings({"SqlDialectInspection", "SqlNoDataSourceInspection"})
     private static final String FK_PROGRAM_ID_STATEMENT = "SELECT * FROM patient_program WHERE program_id = ?";
 
     public static List<String> findUserIdsByFk_program_id(String programId) throws DataSourceException {

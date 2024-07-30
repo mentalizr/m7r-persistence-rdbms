@@ -11,6 +11,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings({"SqlDialectInspection", "SqlNoDataSourceInspection"})
 public class RolePatientEDAO {
 
     private static final Logger logger = LoggerFactory.getLogger(RolePatientDAO.class);
