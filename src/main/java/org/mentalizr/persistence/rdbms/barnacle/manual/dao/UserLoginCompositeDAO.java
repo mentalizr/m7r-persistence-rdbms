@@ -3,19 +3,17 @@ package org.mentalizr.persistence.rdbms.barnacle.manual.dao;
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.DataSourceException;
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.EntityNotFoundException;
 import org.mentalizr.persistence.rdbms.barnacle.dao.RolePatientDAO;
-import org.mentalizr.persistence.rdbms.barnacle.dao.UserAccessKeyDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.UserDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.UserLoginDAO;
-import org.mentalizr.persistence.rdbms.barnacle.manual.vo.UserAccessKeyCompositeVO;
 import org.mentalizr.persistence.rdbms.barnacle.manual.vo.UserLoginCompositeVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.RolePatientVO;
-import org.mentalizr.persistence.rdbms.barnacle.vo.UserAccessKeyVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserLoginVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserVO;
-import org.mentalizr.persistence.rdbms.userAdmin.UserLogin;
+import org.mentalizr.persistence.rdbms.edao.RolePatientEDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.management.relation.Role;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,4 +72,69 @@ public class UserLoginCompositeDAO {
         return userLoginCompositeVOs;
     }
 
+    public static List<UserLoginCompositeVO> findAllPatientsByProjectId(String projectId) throws DataSourceException {
+        List<UserLoginCompositeVO> userLoginCompositeVOs = new ArrayList<>();
+        List<RolePatientVO> rolePatientVOs = RolePatientEDAO.findAllUserByProject(projectId);
+
+        for (RolePatientVO rolePatientVO : rolePatientVOs) {
+
+            try {
+                UserLoginVO userLoginVO = UserLoginDAO.load(rolePatientVO.getUserId());
+                UserVO userVO = UserDAO.load(rolePatientVO.getUserId());
+
+                UserLoginCompositeVO userLoginCompositeVO = new UserLoginCompositeVO(userVO, userLoginVO);
+                userLoginCompositeVOs.add(userLoginCompositeVO);
+
+            } catch (EntityNotFoundException e) {
+                // do intentionally nothing
+            }
+
+        }
+
+        return userLoginCompositeVOs;
+    }
+
+    public static List<UserLoginCompositeVO> findAllPatientsByProgramId(String programId) throws DataSourceException {
+        List<UserLoginCompositeVO> userLoginCompositeVOs = new ArrayList<>();
+        List<RolePatientVO> rolePatientVOs = RolePatientEDAO.findAllUserByProgram(programId);
+
+        for (RolePatientVO rolePatientVO : rolePatientVOs) {
+
+            try {
+                UserLoginVO userLoginVO = UserLoginDAO.load(rolePatientVO.getUserId());
+                UserVO userVO = UserDAO.load(rolePatientVO.getUserId());
+
+                UserLoginCompositeVO userLoginCompositeVO = new UserLoginCompositeVO(userVO, userLoginVO);
+                userLoginCompositeVOs.add(userLoginCompositeVO);
+
+            } catch (EntityNotFoundException e) {
+                // do intentionally nothing
+            }
+
+        }
+
+        return userLoginCompositeVOs;
+    }
+
+    public static List<UserLoginCompositeVO> findAllPatientsByProgramIdAndProjectId(String programId, String projectId) throws DataSourceException {
+        List<UserLoginCompositeVO> userLoginCompositeVOs = new ArrayList<>();
+        List<RolePatientVO> rolePatientVOs = RolePatientEDAO.findAllUserByProgramAndProject(projectId, programId);
+
+        for (RolePatientVO rolePatientVO : rolePatientVOs) {
+
+            try {
+                UserLoginVO userLoginVO = UserLoginDAO.load(rolePatientVO.getUserId());
+                UserVO userVO = UserDAO.load(rolePatientVO.getUserId());
+
+                UserLoginCompositeVO userLoginCompositeVO = new UserLoginCompositeVO(userVO, userLoginVO);
+                userLoginCompositeVOs.add(userLoginCompositeVO);
+
+            } catch (EntityNotFoundException e) {
+                // do intentionally nothing
+            }
+
+        }
+
+        return userLoginCompositeVOs;
+    }
 }
