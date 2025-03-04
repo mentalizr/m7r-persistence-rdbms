@@ -2,10 +2,12 @@ package org.mentalizr.persistence.rdbms.barnacle.manual.dao;
 
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.DataSourceException;
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.EntityNotFoundException;
+import org.mentalizr.persistence.rdbms.barnacle.dao.RolePatientDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.UserAccessKeyDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.UserDAO;
 import org.mentalizr.persistence.rdbms.barnacle.manual.vo.UserAccessKeyCompositeVO;
 import org.mentalizr.persistence.rdbms.barnacle.manual.vo.UserLoginCompositeVO;
+import org.mentalizr.persistence.rdbms.barnacle.vo.RolePatientVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserAccessKeyVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserVO;
 import org.slf4j.Logger;
@@ -29,7 +31,8 @@ public class UserAccessKeyCompositeDAO {
         return new UserAccessKeyCompositeVO(userVO, userAccessKeyVO);
     }
 
-    public static UserAccessKeyCompositeVO findByAccessKey(String accessKey) throws DataSourceException, EntityNotFoundException {
+    public static UserAccessKeyCompositeVO findByAccessKey(String accessKey)
+            throws DataSourceException, EntityNotFoundException {
         UserAccessKeyVO userAccessKeyVO = UserAccessKeyDAO.findByUk_accessKey(accessKey);
         UserVO userVO = UserDAO.load(userAccessKeyVO.getUserId());
         return new UserAccessKeyCompositeVO(userVO, userAccessKeyVO);
@@ -45,6 +48,12 @@ public class UserAccessKeyCompositeDAO {
             userAccessKeyCompositeVOs.add(userAccessKeyCompositeVO);
         }
         return userAccessKeyCompositeVOs;
+    }
+
+    public static List<UserAccessKeyCompositeDAO> findAllByProjectId(String projectId)
+            throws DataSourceException, EntityNotFoundException {
+        List<UserAccessKeyCompositeDAO> userAccessKeyCompositeDAOs = new ArrayList<>();
+        List<RolePatientVO> rolePatientVOs = RolePatientDAO.findAll();
     }
 
     public static void delete(String userId) throws DataSourceException {
