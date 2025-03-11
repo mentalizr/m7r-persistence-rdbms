@@ -22,9 +22,8 @@ public class RolePatientEDAO {
     private static final String PATIENT_PROGRAM_UNASSIGNED_PROJECT_STATEMENT =
             "SELECT role_patient.user_id FROM role_patient, patient_program WHERE project_id IS NULL AND patient_program.user_id = role_patient.user_id AND patient_program.program_id = ?";
 
-    private static final String FIND_ALL_BY_PROJECT_ID_STATEMENT = "SELECT * FROM role_patient WHERE project_id = ?";
-    private static final String FIND_ALL_BY_PROGRAM_STATEMENT = "SELECT * FROM role_patient WHERE user_id IN (SELECT patient_program.user_id FROM patient_program WHERE program_id = ?)";
-    private static final String FIND_ALL_BY_PROGRAM_AND_PROJECT_STATEMENT = "SELECT * FROM role_patient WHERE user_id IN (SELECT patient_program.user_id FROM patient_program WHERE program_id = ?) AND project_id = ?";
+    private static final String FIND_ALL_BY_PROJECT_ID_STATEMENT = "SELECT role_patient.user_id FROM role_patient WHERE project_id = ?";
+    private static final String FIND_ALL_BY_PROGRAM_AND_PROJECT_STATEMENT = "SELECT role_patient.user_id FROM role_patient INNER JOIN patient_program ON role_patient.user_id = patient_program.user_id  WHERE project_id = ?";
 
     public static List<String> findAllUserIdsForProgramAndProject(String programId, String projectId) throws DataSourceException {
         Connection connection = ConnectionManager.openConnection(RolePatientEDAO.class);
@@ -66,10 +65,10 @@ public class RolePatientEDAO {
         return processResultSet(preparedStatement);
     }
 
-    public static List<RolePatientVO> findAllUserByProject(String projectId) throws DataSourceException {
+    public static List<String> findAllUserIDsByProject(String projectId) throws DataSourceException {
         Connection connection = ConnectionManager.openConnection(RolePatientEDAO.class);
         try {
-            return findAllUserByProject(projectId, connection);
+            return findAllUserIDsByProject(projectId, connection);
         } catch(SQLException e) {
             throw new DataSourceException(e);
         } finally {
@@ -77,52 +76,23 @@ public class RolePatientEDAO {
         }
     }
 
-    public static List<RolePatientVO> findAllUserByProject(String projectId, Connection connection)
+    public static List<String> findAllUserIDsByProject(String projectId, Connection connection)
             throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_BY_PROJECT_ID_STATEMENT);
         preparedStatement.setObject(1, projectId, Types.VARCHAR);
         logger.debug(FIND_ALL_BY_PROJECT_ID_STATEMENT + " [{}]", projectId);
         ResultSet resultSet = preparedStatement.executeQuery();
-        List<RolePatientVO> rolePatientVOs = new ArrayList<>();
+        List<String> userIds = new ArrayList<>();
+
         while (resultSet.next()) {
-            RolePatientVO rolePatientVO = new RolePatientVO(resultSet.getObject("user_id", String.class));
-            rolePatientVO.setProjectId(resultSet.getObject("project_id", String.class));
-            rolePatientVO.setTherapistId(resultSet.getObject("therapist_id", String.class));
-            rolePatientVOs.add(rolePatientVO);
+            String userId = resultSet.getObject("user_id", String.class);
+            userIds.add(userId);
         }
 
-        return rolePatientVOs;
+        return userIds;
     }
 
-    public static List<RolePatientVO> findAllUserByProgram(String programId) throws DataSourceException {
-        Connection connection = ConnectionManager.openConnection(RolePatientEDAO.class);
-        try {
-            return findAllUserByProgram(programId, connection);
-        } catch(SQLException e) {
-            throw new DataSourceException(e);
-        } finally {
-            ConnectionManager.releaseConnection(connection, RolePatientDAO.class);
-        }
-    }
-
-    public static List<RolePatientVO> findAllUserByProgram(String programId, Connection connection)
-            throws SQLException {
-        PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_BY_PROGRAM_STATEMENT);
-        preparedStatement.setObject(1, programId, Types.VARCHAR);
-        logger.debug(FIND_ALL_BY_PROGRAM_STATEMENT + " [{}]", programId);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        List<RolePatientVO> rolePatientVOs = new ArrayList<>();
-        while (resultSet.next()) {
-            RolePatientVO rolePatientVO = new RolePatientVO(resultSet.getObject("user_id", String.class));
-            rolePatientVO.setProjectId(resultSet.getObject("project_id", String.class));
-            rolePatientVO.setTherapistId(resultSet.getObject("therapist_id", String.class));
-            rolePatientVOs.add(rolePatientVO);
-        }
-
-        return rolePatientVOs;
-    }
-
-    public static List<RolePatientVO> findAllUserByProgramAndProject(String programId, String projectId)
+    public static List<String> findAllUserByProgramAndProject(String programId, String projectId)
             throws DataSourceException {
         Connection connection = ConnectionManager.openConnection(RolePatientEDAO.class);
         try {
@@ -134,27 +104,27 @@ public class RolePatientEDAO {
         }
     }
 
-    public static List<RolePatientVO> findAllUserByProgramAndProject(String programId, String projectId, Connection connection)
+    public static List<String> findAllUserByProgramAndProject(String programId, String projectId, Connection connection)
             throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_BY_PROGRAM_AND_PROJECT_STATEMENT);
         preparedStatement.setObject(1, programId, Types.VARCHAR);
         preparedStatement.setObject(2, projectId, Types.VARCHAR);
         logger.debug(FIND_ALL_BY_PROGRAM_AND_PROJECT_STATEMENT + " [{}]", programId + ":" + projectId);
         ResultSet resultSet = preparedStatement.executeQuery();
-        List<RolePatientVO> rolePatientVOs = new ArrayList<>();
+        List<String> userIds = new ArrayList<>();
+
         while (resultSet.next()) {
-            RolePatientVO rolePatientVO = new RolePatientVO(resultSet.getObject("user_id", String.class));
-            rolePatientVO.setProjectId(resultSet.getObject("project_id", String.class));
-            rolePatientVO.setTherapistId(resultSet.getObject("therapist_id", String.class));
-            rolePatientVOs.add(rolePatientVO);
+            String userId = resultSet.getObject("user_id", String.class);
+            userIds.add(userId);
         }
 
-        return rolePatientVOs;
+        return userIds;
     }
 
     private static List<String> processResultSet(PreparedStatement preparedStatement) throws SQLException {
         try (preparedStatement; ResultSet resultSet = preparedStatement.executeQuery()) {
             List<String> userIds = new ArrayList<>();
+
             while (resultSet.next()) {
                 String userId = resultSet.getObject("user_id", String.class);
                 userIds.add(userId);

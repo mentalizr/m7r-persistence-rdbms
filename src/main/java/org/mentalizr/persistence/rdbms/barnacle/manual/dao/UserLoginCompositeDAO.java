@@ -2,6 +2,7 @@ package org.mentalizr.persistence.rdbms.barnacle.manual.dao;
 
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.DataSourceException;
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.EntityNotFoundException;
+import org.mentalizr.persistence.rdbms.barnacle.dao.PatientProgramDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.RolePatientDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.UserDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.UserLoginDAO;
@@ -9,6 +10,7 @@ import org.mentalizr.persistence.rdbms.barnacle.manual.vo.UserLoginCompositeVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.RolePatientVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserLoginVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserVO;
+import org.mentalizr.persistence.rdbms.edao.PatientProgramEDAO;
 import org.mentalizr.persistence.rdbms.edao.RolePatientEDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,13 +76,13 @@ public class UserLoginCompositeDAO {
 
     public static List<UserLoginCompositeVO> findAllPatientsByProjectId(String projectId) throws DataSourceException {
         List<UserLoginCompositeVO> userLoginCompositeVOs = new ArrayList<>();
-        List<RolePatientVO> rolePatientVOs = RolePatientEDAO.findAllUserByProject(projectId);
+        List<String> userIDs = RolePatientEDAO.findAllUserIDsByProject(projectId);
 
-        for (RolePatientVO rolePatientVO : rolePatientVOs) {
+        for (String userid : userIDs) {
 
             try {
-                UserLoginVO userLoginVO = UserLoginDAO.load(rolePatientVO.getUserId());
-                UserVO userVO = UserDAO.load(rolePatientVO.getUserId());
+                UserLoginVO userLoginVO = UserLoginDAO.load(userid);
+                UserVO userVO = UserDAO.load(userid);
 
                 UserLoginCompositeVO userLoginCompositeVO = new UserLoginCompositeVO(userVO, userLoginVO);
                 userLoginCompositeVOs.add(userLoginCompositeVO);
@@ -96,13 +98,13 @@ public class UserLoginCompositeDAO {
 
     public static List<UserLoginCompositeVO> findAllPatientsByProgramId(String programId) throws DataSourceException {
         List<UserLoginCompositeVO> userLoginCompositeVOs = new ArrayList<>();
-        List<RolePatientVO> rolePatientVOs = RolePatientEDAO.findAllUserByProgram(programId);
+        List<String> userIDs = PatientProgramEDAO.findUserIdsByFk_program_id(programId);
 
-        for (RolePatientVO rolePatientVO : rolePatientVOs) {
+        for (String userId : userIDs) {
 
             try {
-                UserLoginVO userLoginVO = UserLoginDAO.load(rolePatientVO.getUserId());
-                UserVO userVO = UserDAO.load(rolePatientVO.getUserId());
+                UserLoginVO userLoginVO = UserLoginDAO.load(userId);
+                UserVO userVO = UserDAO.load(userId);
 
                 UserLoginCompositeVO userLoginCompositeVO = new UserLoginCompositeVO(userVO, userLoginVO);
                 userLoginCompositeVOs.add(userLoginCompositeVO);
@@ -118,13 +120,13 @@ public class UserLoginCompositeDAO {
 
     public static List<UserLoginCompositeVO> findAllPatientsByProgramIdAndProjectId(String programId, String projectId) throws DataSourceException {
         List<UserLoginCompositeVO> userLoginCompositeVOs = new ArrayList<>();
-        List<RolePatientVO> rolePatientVOs = RolePatientEDAO.findAllUserByProgramAndProject(projectId, programId);
+        List<String> userIDs = RolePatientEDAO.findAllUserByProgramAndProject(projectId, programId);
 
-        for (RolePatientVO rolePatientVO : rolePatientVOs) {
+        for (String userId : userIDs) {
 
             try {
-                UserLoginVO userLoginVO = UserLoginDAO.load(rolePatientVO.getUserId());
-                UserVO userVO = UserDAO.load(rolePatientVO.getUserId());
+                UserLoginVO userLoginVO = UserLoginDAO.load(userId);
+                UserVO userVO = UserDAO.load(userId);
 
                 UserLoginCompositeVO userLoginCompositeVO = new UserLoginCompositeVO(userVO, userLoginVO);
                 userLoginCompositeVOs.add(userLoginCompositeVO);
