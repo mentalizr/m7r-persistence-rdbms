@@ -21,7 +21,6 @@ public class RolePatientEDAO {
 
     private static final String PATIENT_PROGRAM_UNASSIGNED_PROJECT_STATEMENT =
             "SELECT role_patient.user_id FROM role_patient, patient_program WHERE project_id IS NULL AND patient_program.user_id = role_patient.user_id AND patient_program.program_id = ?";
-
     private static final String FIND_ALL_BY_PROJECT_ID_STATEMENT = "SELECT role_patient.user_id FROM role_patient WHERE project_id = ?";
     private static final String FIND_ALL_BY_PROGRAM_AND_PROJECT_STATEMENT = "SELECT role_patient.user_id FROM role_patient INNER JOIN patient_program ON role_patient.user_id = patient_program.user_id  WHERE project_id = ?";
 

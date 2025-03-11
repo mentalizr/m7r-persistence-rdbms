@@ -2,18 +2,12 @@ package org.mentalizr.persistence.rdbms.barnacle.manual.dao;
 
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.DataSourceException;
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.EntityNotFoundException;
-import org.mentalizr.persistence.rdbms.barnacle.dao.RolePatientDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.UserAccessKeyDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.UserDAO;
-import org.mentalizr.persistence.rdbms.barnacle.dao.UserLoginDAO;
 import org.mentalizr.persistence.rdbms.barnacle.manual.vo.UserAccessKeyCompositeVO;
-import org.mentalizr.persistence.rdbms.barnacle.manual.vo.UserLoginCompositeVO;
-import org.mentalizr.persistence.rdbms.barnacle.vo.RolePatientVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserAccessKeyVO;
-import org.mentalizr.persistence.rdbms.barnacle.vo.UserLoginVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserVO;
 import org.mentalizr.persistence.rdbms.edao.RoleAccessKeyEDAO;
-import org.mentalizr.persistence.rdbms.edao.RolePatientEDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,10 +65,11 @@ public class UserAccessKeyCompositeDAO {
     public static List<UserAccessKeyCompositeVO> findAllByProgram(String programId)
             throws DataSourceException, EntityNotFoundException {
         List<UserAccessKeyCompositeVO> userAccessKeyCompositeVOs = new ArrayList<>();
-        List<UserAccessKeyVO> userAccessKeyVOs = RoleAccessKeyEDAO.findAllUserByProgram(programId);
+        List<String> userIDs = RoleAccessKeyEDAO.findAllUserByProgram(programId);
 
-        for(UserAccessKeyVO userAccessKeyVO : userAccessKeyVOs) {
-            UserVO userVO = UserDAO.load(userAccessKeyVO.getUserId());
+        for(String userId : userIDs) {
+            UserVO userVO = UserDAO.load(userId);
+            UserAccessKeyVO userAccessKeyVO = userVO.getUserAccessKeyVO().getFirst();
 
             UserAccessKeyCompositeVO userAccessKeyCompositeVO = new UserAccessKeyCompositeVO(userVO, userAccessKeyVO);
             userAccessKeyCompositeVOs.add(userAccessKeyCompositeVO);

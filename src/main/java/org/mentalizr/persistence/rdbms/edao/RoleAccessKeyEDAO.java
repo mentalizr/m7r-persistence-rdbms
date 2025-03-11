@@ -19,7 +19,7 @@ public class RoleAccessKeyEDAO {
     private static final Logger logger = LoggerFactory.getLogger(RoleAccessKeyEDAO.class);
 
     private static final String FIND_ALL_BY_PROJECT_ID_STATEMENT = "SELECT * FROM user_access_key WHERE user_id IN (SELECT role_patient.user_id FROM role_patient WHERE project_id = ?)";
-    private static final String FIND_ALL_BY_PROGRAM_STATEMENT = "SELECT * FROM user_access_key WHERE user_id IN (SELECT patient_program.user_id FROM patient_program WHERE program_id = ?)";
+    private static final String FIND_ALL_BY_PROGRAM_STATEMENT = "SELECT user_access_key.user_id FROM user_access_key INNER JOIN patient_program ON user_access_key.user_id = patient_program.user_id WHERE patient_program.program_id = ?;";
     private static final String FIND_ALL_BY_PROGRAM_AND_PROJECT_STATEMENT = "SELECT * FROM user_access_key WHERE user_id IN (SELECT patient_program.user_id FROM patient_program WHERE program_id = ?) AND project_id = ?";
 
     public static List<UserAccessKeyVO> findAllUserByProject(String projectId) throws DataSourceException {
@@ -48,7 +48,7 @@ public class RoleAccessKeyEDAO {
         return userAccessKeyDAOs;
     }
 
-    public static List<UserAccessKeyVO> findAllUserByProgram(String programId) throws DataSourceException {
+    public static List<String> findAllUserByProgram(String programId) throws DataSourceException {
         Connection connection = ConnectionManager.openConnection(RoleAccessKeyEDAO.class);
         try {
             return findAllUserByProgram(programId, connection);
@@ -59,20 +59,20 @@ public class RoleAccessKeyEDAO {
         }
     }
 
-    public static List<UserAccessKeyVO> findAllUserByProgram(String programId, Connection connection)
+    public static List<String> findAllUserByProgram(String programId, Connection connection)
             throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_BY_PROGRAM_STATEMENT);
         preparedStatement.setString(1, programId);
         logger.debug(FIND_ALL_BY_PROGRAM_STATEMENT + "[{}]", programId);
         ResultSet resultSet = preparedStatement.executeQuery();
-        List<UserAccessKeyVO> userAccessKeyDAOs = new ArrayList<>();
+        List<String> userIDs = new ArrayList<>();
+
         while (resultSet.next()) {
-            UserAccessKeyVO userAccessKeyVO = new UserAccessKeyVO(resultSet.getObject("user_id", String.class));
-            userAccessKeyVO.setAccessKey(resultSet.getObject("accessKey", String.class));
-            userAccessKeyDAOs.add(userAccessKeyVO);
+            String userId = resultSet.getObject("user_id", String.class);
+            userIDs.add(userId);
         }
 
-        return userAccessKeyDAOs;
+        return userIDs;
     }
 
     public static List<UserAccessKeyVO> findAllUserByProgramAndProject(String programId, String projectId)
@@ -95,6 +95,7 @@ public class RoleAccessKeyEDAO {
         logger.debug(FIND_ALL_BY_PROGRAM_AND_PROJECT_STATEMENT + "[{}]", programId);
         ResultSet resultSet = preparedStatement.executeQuery();
         List<UserAccessKeyVO> userAccessKeyDAOs = new ArrayList<>();
+
         while (resultSet.next()) {
             UserAccessKeyVO userAccessKeyVO = new UserAccessKeyVO(resultSet.getObject("user_id", String.class));
             userAccessKeyVO.setAccessKey(resultSet.getObject("accessKey", String.class));

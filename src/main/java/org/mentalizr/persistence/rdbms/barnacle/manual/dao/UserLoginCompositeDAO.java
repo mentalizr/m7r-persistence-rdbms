@@ -78,50 +78,24 @@ public class UserLoginCompositeDAO {
         List<UserLoginCompositeVO> userLoginCompositeVOs = new ArrayList<>();
         List<String> userIDs = RolePatientEDAO.findAllUserIDsByProject(projectId);
 
-        for (String userid : userIDs) {
-
-            try {
-                UserLoginVO userLoginVO = UserLoginDAO.load(userid);
-                UserVO userVO = UserDAO.load(userid);
-
-                UserLoginCompositeVO userLoginCompositeVO = new UserLoginCompositeVO(userVO, userLoginVO);
-                userLoginCompositeVOs.add(userLoginCompositeVO);
-
-            } catch (EntityNotFoundException e) {
-                // do intentionally nothing
-            }
-
-        }
-
-        return userLoginCompositeVOs;
+        return getUserLoginCompositeVOS(userLoginCompositeVOs, userIDs);
     }
 
     public static List<UserLoginCompositeVO> findAllPatientsByProgramId(String programId) throws DataSourceException {
         List<UserLoginCompositeVO> userLoginCompositeVOs = new ArrayList<>();
         List<String> userIDs = PatientProgramEDAO.findUserIdsByFk_program_id(programId);
 
-        for (String userId : userIDs) {
-
-            try {
-                UserLoginVO userLoginVO = UserLoginDAO.load(userId);
-                UserVO userVO = UserDAO.load(userId);
-
-                UserLoginCompositeVO userLoginCompositeVO = new UserLoginCompositeVO(userVO, userLoginVO);
-                userLoginCompositeVOs.add(userLoginCompositeVO);
-
-            } catch (EntityNotFoundException e) {
-                // do intentionally nothing
-            }
-
-        }
-
-        return userLoginCompositeVOs;
+        return getUserLoginCompositeVOS(userLoginCompositeVOs, userIDs);
     }
 
     public static List<UserLoginCompositeVO> findAllPatientsByProgramIdAndProjectId(String programId, String projectId) throws DataSourceException {
         List<UserLoginCompositeVO> userLoginCompositeVOs = new ArrayList<>();
         List<String> userIDs = RolePatientEDAO.findAllUserByProgramAndProject(projectId, programId);
 
+        return getUserLoginCompositeVOS(userLoginCompositeVOs, userIDs);
+    }
+
+    private static List<UserLoginCompositeVO> getUserLoginCompositeVOS(List<UserLoginCompositeVO> userLoginCompositeVOs, List<String> userIDs) throws DataSourceException {
         for (String userId : userIDs) {
 
             try {
@@ -139,4 +113,6 @@ public class UserLoginCompositeDAO {
 
         return userLoginCompositeVOs;
     }
+
+
 }
