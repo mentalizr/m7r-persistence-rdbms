@@ -2,7 +2,6 @@ package org.mentalizr.persistence.rdbms.barnacle.manual.dao;
 
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.DataSourceException;
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.EntityNotFoundException;
-import org.mentalizr.persistence.rdbms.barnacle.dao.PatientProgramDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.RolePatientDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.UserDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.UserLoginDAO;
@@ -10,12 +9,11 @@ import org.mentalizr.persistence.rdbms.barnacle.manual.vo.UserLoginCompositeVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.RolePatientVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserLoginVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserVO;
-import org.mentalizr.persistence.rdbms.edao.PatientProgramEDAO;
 import org.mentalizr.persistence.rdbms.edao.RolePatientEDAO;
+import org.mentalizr.serviceObjects.requestObjects.UserListQuerySO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.management.relation.Role;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,45 +72,10 @@ public class UserLoginCompositeDAO {
         return userLoginCompositeVOs;
     }
 
-    public static List<UserLoginCompositeVO> findAllPatientsByProjectId(String projectId) throws DataSourceException {
-        List<UserLoginCompositeVO> userLoginCompositeVOs = new ArrayList<>();
-        List<String> userIDs = RolePatientEDAO.findAllUserIDsByProject(projectId);
+    public static List<UserLoginCompositeVO> findAllPatientsBy(UserListQuerySO userListQuerySO)
+            throws DataSourceException {
 
-        return getUserLoginCompositeVOS(userLoginCompositeVOs, userIDs);
+        return RolePatientEDAO.findAllUserBy(userListQuerySO);
     }
-
-    public static List<UserLoginCompositeVO> findAllPatientsByProgramId(String programId) throws DataSourceException {
-        List<UserLoginCompositeVO> userLoginCompositeVOs = new ArrayList<>();
-        List<String> userIDs = PatientProgramEDAO.findUserIdsByFk_program_id(programId);
-
-        return getUserLoginCompositeVOS(userLoginCompositeVOs, userIDs);
-    }
-
-    public static List<UserLoginCompositeVO> findAllPatientsByProgramIdAndProjectId(String programId, String projectId) throws DataSourceException {
-        List<UserLoginCompositeVO> userLoginCompositeVOs = new ArrayList<>();
-        List<String> userIDs = RolePatientEDAO.findAllUserByProgramAndProject(projectId, programId);
-
-        return getUserLoginCompositeVOS(userLoginCompositeVOs, userIDs);
-    }
-
-    private static List<UserLoginCompositeVO> getUserLoginCompositeVOS(List<UserLoginCompositeVO> userLoginCompositeVOs, List<String> userIDs) throws DataSourceException {
-        for (String userId : userIDs) {
-
-            try {
-                UserLoginVO userLoginVO = UserLoginDAO.load(userId);
-                UserVO userVO = UserDAO.load(userId);
-
-                UserLoginCompositeVO userLoginCompositeVO = new UserLoginCompositeVO(userVO, userLoginVO);
-                userLoginCompositeVOs.add(userLoginCompositeVO);
-
-            } catch (EntityNotFoundException e) {
-                // do intentionally nothing
-            }
-
-        }
-
-        return userLoginCompositeVOs;
-    }
-
 
 }
