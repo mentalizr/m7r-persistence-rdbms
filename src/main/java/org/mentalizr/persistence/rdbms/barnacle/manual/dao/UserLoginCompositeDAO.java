@@ -72,10 +72,4 @@ public class UserLoginCompositeDAO {
         return userLoginCompositeVOs;
     }
 
-    public static List<UserLoginCompositeVO> findAllPatientsBy(UserListQuerySO userListQuerySO)
-            throws DataSourceException {
-
-        return RolePatientEDAO.findAllUserBy(userListQuerySO);
-    }
-
 }
