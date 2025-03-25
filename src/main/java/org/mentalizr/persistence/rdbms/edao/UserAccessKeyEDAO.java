@@ -18,7 +18,7 @@ public class UserAccessKeyEDAO {
     private static final Logger logger = LoggerFactory.getLogger(UserAccessKeyEDAO.class);
     private enum Type { UNUSED, ACTIVATED }
 
-    private static final String GET_UNUSED_ACCESS_KEYS_OLDER_THAN_STATEMENT =
+    private static final String GET_EXPIRED_STATEMENT =
             "SELECT user.id, user.active, user.creation, uak.accessKey, patient_program.program_id, " +
                     "patient_program.blocking, role_patient.therapist_id, role_patient.project_id " +
                     "FROM user_access_key uak " +
@@ -27,7 +27,7 @@ public class UserAccessKeyEDAO {
                     "INNER JOIN patient_program ON user.id = patient_program.user_id " +
                     "WHERE user.creation <= ? AND user.firstActive IS NULL";
 
-    private static final String GET_ACTIVATED_ACCESS_KEYS_LAST_USED_BEFORE_STATEMENT =
+    private static final String GET_LAST_USED_BEFORE_STATEMENT =
             "SELECT user.id, user.active, user.creation, user.firstActive, user.lastActive, uak.accessKey, patient_program.program_id, " +
                     "patient_program.blocking, role_patient.therapist_id, role_patient.project_id " +
                     "FROM user_access_key uak " +
@@ -36,12 +36,12 @@ public class UserAccessKeyEDAO {
                     "INNER JOIN patient_program ON user.id = patient_program.user_id " +
                     "WHERE user.lastActive <= ?";
 
-    public static List<UserAccessKeyPatientCompositeVO> getUnusedAccessKeysOlderThan(
+    public static List<UserAccessKeyPatientCompositeVO> getExpired(
             long creationTimestamp) throws DataSourceException {
 
         Connection connection = ConnectionManager.openConnection(UserAccessKeyEDAO.class);
         try {
-            return getExpired(Type.UNUSED, creationTimestamp, connection);
+            return getExpiredByType(Type.UNUSED, creationTimestamp, connection);
         } catch (SQLException e) {
             throw new DataSourceException(e);
         } finally {
@@ -49,12 +49,12 @@ public class UserAccessKeyEDAO {
         }
     }
 
-    public static List<UserAccessKeyPatientCompositeVO> getActivatedLastUsedBefore(
+    public static List<UserAccessKeyPatientCompositeVO> getLastUsedBefore(
             long creationTimestamp) throws DataSourceException {
 
         Connection connection = ConnectionManager.openConnection(UserAccessKeyEDAO.class);
         try {
-            return getExpired(Type.ACTIVATED, creationTimestamp, connection);
+            return getExpiredByType(Type.ACTIVATED, creationTimestamp, connection);
         } catch (SQLException e) {
             throw new DataSourceException(e);
         } finally {
@@ -62,25 +62,25 @@ public class UserAccessKeyEDAO {
         }
     }
 
-    private static List<UserAccessKeyPatientCompositeVO> getExpired(
+    private static List<UserAccessKeyPatientCompositeVO> getExpiredByType(
             Type type,
             long creationTimestamp,
             Connection connection) throws SQLException {
 
         PreparedStatement preparedStatement;
         if (type == Type.ACTIVATED) {
-            preparedStatement = connection.prepareStatement(GET_ACTIVATED_ACCESS_KEYS_LAST_USED_BEFORE_STATEMENT);
+            preparedStatement = connection.prepareStatement(GET_LAST_USED_BEFORE_STATEMENT);
         } else if (type == Type.UNUSED) {
-            preparedStatement = connection.prepareStatement(GET_UNUSED_ACCESS_KEYS_OLDER_THAN_STATEMENT);
+            preparedStatement = connection.prepareStatement(GET_EXPIRED_STATEMENT);
         } else {
             throw new IllegalArgumentException("Unsupported type: " + type);
         }
 
         preparedStatement.setObject(1, creationTimestamp, Types.BIGINT);
         if (type == Type.ACTIVATED) {
-            logger.debug(GET_ACTIVATED_ACCESS_KEYS_LAST_USED_BEFORE_STATEMENT + " [" + creationTimestamp + "]");
+            logger.debug(GET_LAST_USED_BEFORE_STATEMENT + " [" + creationTimestamp + "]");
         } else {
-            logger.debug(GET_UNUSED_ACCESS_KEYS_OLDER_THAN_STATEMENT + " [" + creationTimestamp + "]");
+            logger.debug(GET_EXPIRED_STATEMENT + " [" + creationTimestamp + "]");
         }
 
         ResultSet resultSet = preparedStatement.executeQuery();
