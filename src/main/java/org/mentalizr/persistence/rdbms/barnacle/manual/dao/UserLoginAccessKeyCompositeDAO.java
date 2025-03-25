@@ -2,10 +2,8 @@ package org.mentalizr.persistence.rdbms.barnacle.manual.dao;
 
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.ConnectionManager;
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.DataSourceException;
-import org.mentalizr.persistence.rdbms.barnacle.dao.RolePatientDAO;
-import org.mentalizr.persistence.rdbms.barnacle.manual.vo.UserLoginPatientCompositeVO;
+import org.mentalizr.persistence.rdbms.barnacle.manual.vo.UserLoginAccessKeyCompositeVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.*;
-import org.mentalizr.persistence.rdbms.edao.RolePatientEDAO;
 import org.mentalizr.serviceObjects.requestObjects.UserListQuerySO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,31 +15,31 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserLoginPatientCompositeDAO {
-    private static final Logger logger = LoggerFactory.getLogger(UserLoginPatientCompositeDAO.class);
+public class UserLoginAccessKeyCompositeDAO {
+    private static final Logger logger = LoggerFactory.getLogger(UserLoginAccessKeyCompositeDAO.class);
 
-    private static final String FIND_ALL_BY_STATEMENT = "SELECT role_patient.user_id, therapist_id, project_id, patient_program.program_id, blocking, user_login.username, password_hash, email, first_name, last_name, gender, second_fa, email_confirmation, email_conf_token, email_conf_code, renew_pw_req, user.active, creation, firstActive, lastActive" +
-            " FROM role_patient" +
-            " INNER JOIN patient_program ON role_patient.user_id = patient_program.user_id" +
-            " INNER JOIN user_login ON role_patient.user_id = user_login.user_id" +
-            " INNER JOIN user ON role_patient.user_id = user.id" +
+    private static final String FIND_ALL_BY_STATEMENT = "SELECT user.active, creation, firstActive, lastActive, user_access_key.user_id, accessKey, therapist_id, patient_program.program_id, blocking, role_patient.project_id" +
+            " FROM user_access_key" +
+            " INNER JOIN user ON user_access_key.user_id = user.id" +
+            " INNER JOIN patient_program ON user_access_key.user_id = patient_program.user_id" +
+            " INNER JOIN role_patient ON user_access_key.user_id = role_patient.user_id" +
             " WHERE (? = 1 AND ? = 1 AND patient_program.program_id = ? AND role_patient.project_id = ?)" +
             " OR (? = 1 AND role_patient.project_id = ?)" +
             " OR (? = 1 AND patient_program.program_id = ?)";
 
-    public static List<UserLoginPatientCompositeVO> findAllUserBy(UserListQuerySO userListQuerySO)
+    public static List<UserLoginAccessKeyCompositeVO> findAllUserBy(UserListQuerySO userListQuerySO)
             throws DataSourceException {
-        Connection connection = ConnectionManager.openConnection(UserLoginPatientCompositeDAO.class);
+        Connection connection = ConnectionManager.openConnection(UserLoginAccessKeyCompositeDAO.class);
         try {
             return findAllUserBy(userListQuerySO, connection);
         } catch(SQLException e) {
             throw new DataSourceException(e);
         } finally {
-            ConnectionManager.releaseConnection(connection, UserLoginPatientCompositeDAO.class);
+            ConnectionManager.releaseConnection(connection, UserLoginAccessKeyCompositeDAO.class);
         }
     }
 
-    public static List<UserLoginPatientCompositeVO> findAllUserBy(UserListQuerySO userListQuerySO, Connection connection)
+    public static List<UserLoginAccessKeyCompositeVO> findAllUserBy(UserListQuerySO userListQuerySO, Connection connection)
             throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_BY_STATEMENT);
         preparedStatement.setInt(1, userListQuerySO.isProject() ? 1 : 0);
@@ -53,39 +51,28 @@ public class UserLoginPatientCompositeDAO {
         preparedStatement.setInt(7, userListQuerySO.isProgram() ? 1 : 0);
         preparedStatement.setString(8, userListQuerySO.getProgramName());
 
-
         logger.debug(FIND_ALL_BY_STATEMENT + " [{}]", userListQuerySO.getProgramName() + ":"
                 + userListQuerySO.getProjectName());
         ResultSet resultSet = preparedStatement.executeQuery();
-        List<UserLoginPatientCompositeVO> userLoginCompositeVOs = new ArrayList<>();
+        List<UserLoginAccessKeyCompositeVO> userLoginAccessKeyCompositeVOs = new ArrayList<>();
 
         while (resultSet.next()) {
-            UserLoginPatientCompositeVO userLoginPatientCompositeVO = processResultSet(resultSet);
-            userLoginCompositeVOs.add(userLoginPatientCompositeVO);
+            UserLoginAccessKeyCompositeVO userLoginAccessKeyCompositeVO = processResultSet(resultSet);
+            userLoginAccessKeyCompositeVOs.add(userLoginAccessKeyCompositeVO);
         }
-
-        return userLoginCompositeVOs;
+        return userLoginAccessKeyCompositeVOs;
     }
 
-    private static UserLoginPatientCompositeVO processResultSet(ResultSet resultSet) throws SQLException {
+    private static UserLoginAccessKeyCompositeVO processResultSet(ResultSet resultSet) throws SQLException {
         UserVO userVO = new UserVO(resultSet.getObject("user_id", String.class));
         userVO.setActive(resultSet.getBoolean("active"));
         userVO.setCreation(resultSet.getLong("creation"));
         userVO.setFirstActive(resultSet.getLong("firstActive"));
         userVO.setLastActive(resultSet.getLong("lastActive"));
 
-        UserLoginVO userLoginVO = new UserLoginVO(resultSet.getObject("user_id", String.class));
-        userLoginVO.setPasswordHash(resultSet.getString("password_hash"));
-        userLoginVO.setUsername(resultSet.getString("username"));
-        userLoginVO.setEmail(resultSet.getString("email"));
-        userLoginVO.setEmailConfirmation(resultSet.getLong("email_confirmation"));
-        userLoginVO.setEmailConfCode(resultSet.getString("email_conf_code"));
-        userLoginVO.setEmailConfToken(resultSet.getString("email_conf_token"));
-        userLoginVO.setFirstName(resultSet.getString("first_name"));
-        userLoginVO.setLastName(resultSet.getString("last_name"));
-        userLoginVO.setGender(resultSet.getInt("gender"));
-        userLoginVO.setSecondFA(resultSet.getBoolean("second_fa"));
-        userLoginVO.setRenewPasswordRequired(resultSet.getBoolean("renew_pw_req"));
+        UserAccessKeyVO userAccessKeyVO = new UserAccessKeyVO(userVO.getId());
+        userAccessKeyVO.setUserId(userVO.getId());
+        userAccessKeyVO.setAccessKey(resultSet.getString("accessKey"));
 
         RolePatientVO rolePatientVO = new RolePatientVO(userVO.getId());
         rolePatientVO.setTherapistId(resultSet.getString("therapist_id"));
@@ -96,7 +83,6 @@ public class UserLoginPatientCompositeDAO {
         PatientProgramVO patientProgramVO = new PatientProgramVO(patientProgramPK);
         patientProgramVO.setBlocking(resultSet.getBoolean("blocking"));
 
-        return new UserLoginPatientCompositeVO(userVO, userLoginVO, patientProgramVO, rolePatientVO);
+        return new UserLoginAccessKeyCompositeVO(userVO, userAccessKeyVO, rolePatientVO, patientProgramVO);
     }
-
 }

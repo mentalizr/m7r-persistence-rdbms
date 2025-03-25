@@ -9,8 +9,6 @@ import org.mentalizr.persistence.rdbms.barnacle.manual.vo.UserLoginCompositeVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.RolePatientVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserLoginVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserVO;
-import org.mentalizr.persistence.rdbms.edao.RolePatientEDAO;
-import org.mentalizr.serviceObjects.requestObjects.UserListQuerySO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
