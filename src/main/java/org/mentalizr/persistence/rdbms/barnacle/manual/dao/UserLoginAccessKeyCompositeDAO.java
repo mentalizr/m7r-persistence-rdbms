@@ -23,9 +23,12 @@ public class UserLoginAccessKeyCompositeDAO {
             " INNER JOIN user ON user_access_key.user_id = user.id" +
             " INNER JOIN patient_program ON user_access_key.user_id = patient_program.user_id" +
             " INNER JOIN role_patient ON user_access_key.user_id = role_patient.user_id" +
-            " WHERE (? = 1 AND ? = 1 AND patient_program.program_id = ? AND role_patient.project_id = ?)" +
-            " OR (? = 1 AND role_patient.project_id = ?)" +
-            " OR (? = 1 AND patient_program.program_id = ?)";
+            " WHERE CASE" +
+            " WHEN (? = 1 AND ? = 1) THEN patient_program.program_id = ? AND role_patient.project_id = ?" +
+            " WHEN (? = 1 AND ? = 0) THEN patient_program.program_id = ?" +
+            " WHEN (? = 0 AND ? = 1) THEN role_patient.project_id = ?" +
+            " ELSE patient_program.program_id = '' AND role_patient.project_id = ''" +
+            " END";
 
     public static List<UserLoginAccessKeyCompositeVO> findAllUserBy(UserListQuerySO userListQuerySO)
             throws DataSourceException {
@@ -42,17 +45,23 @@ public class UserLoginAccessKeyCompositeDAO {
     public static List<UserLoginAccessKeyCompositeVO> findAllUserBy(UserListQuerySO userListQuerySO, Connection connection)
             throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_BY_STATEMENT);
-        preparedStatement.setInt(1, userListQuerySO.isProject() ? 1 : 0);
-        preparedStatement.setInt(2, userListQuerySO.isProgram() ? 1 : 0);
+        preparedStatement.setInt(1, userListQuerySO.isProgram() ? 1 : 0);
+        preparedStatement.setInt(2, userListQuerySO.isProject() ? 1 : 0);
         preparedStatement.setString(3, userListQuerySO.getProgramName());
         preparedStatement.setString(4, userListQuerySO.getProjectName());
-        preparedStatement.setInt(5, userListQuerySO.isProject() ? 1 : 0);
-        preparedStatement.setString(6, userListQuerySO.getProjectName());
-        preparedStatement.setInt(7, userListQuerySO.isProgram() ? 1 : 0);
-        preparedStatement.setString(8, userListQuerySO.getProgramName());
+        preparedStatement.setInt(5, userListQuerySO.isProgram() ? 1 : 0);
+        preparedStatement.setInt(6, userListQuerySO.isProject() ? 1 : 0);
+        preparedStatement.setString(7, userListQuerySO.getProgramName());
+        preparedStatement.setInt(8, userListQuerySO.isProgram() ? 1 : 0);
+        preparedStatement.setInt(9, userListQuerySO.isProject() ? 1 : 0);
+        preparedStatement.setString(10, userListQuerySO.getProjectName());
 
-        logger.debug(FIND_ALL_BY_STATEMENT + " [{}]", userListQuerySO.getProgramName() + ":"
-                + userListQuerySO.getProjectName());
+        logger.debug(FIND_ALL_BY_STATEMENT + " [{}] [{}] [{}] [{}]",
+                userListQuerySO.isProgram(),
+                userListQuerySO.getProgramName(),
+                userListQuerySO.isProject(),
+                userListQuerySO.getProjectName());
+
         ResultSet resultSet = preparedStatement.executeQuery();
         List<UserLoginAccessKeyCompositeVO> userLoginAccessKeyCompositeVOs = new ArrayList<>();
 

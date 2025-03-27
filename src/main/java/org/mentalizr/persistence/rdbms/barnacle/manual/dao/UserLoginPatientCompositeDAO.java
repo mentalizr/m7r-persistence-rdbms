@@ -2,10 +2,8 @@ package org.mentalizr.persistence.rdbms.barnacle.manual.dao;
 
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.ConnectionManager;
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.DataSourceException;
-import org.mentalizr.persistence.rdbms.barnacle.dao.RolePatientDAO;
 import org.mentalizr.persistence.rdbms.barnacle.manual.vo.UserLoginPatientCompositeVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.*;
-import org.mentalizr.persistence.rdbms.edao.RolePatientEDAO;
 import org.mentalizr.serviceObjects.requestObjects.UserListQuerySO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +23,12 @@ public class UserLoginPatientCompositeDAO {
             " INNER JOIN patient_program ON role_patient.user_id = patient_program.user_id" +
             " INNER JOIN user_login ON role_patient.user_id = user_login.user_id" +
             " INNER JOIN user ON role_patient.user_id = user.id" +
-            " WHERE (? = 1 AND ? = 1 AND patient_program.program_id = ? AND role_patient.project_id = ?)" +
-            " OR (? = 1 AND role_patient.project_id = ?)" +
-            " OR (? = 1 AND patient_program.program_id = ?)";
+            " WHERE CASE " +
+            " WHEN (? = 1 AND ? = 1) THEN patient_program.program_id = ? AND role_patient.project_id = ?" +
+            " WHEN (? = 1 AND ? = 0) THEN patient_program.program_id = ?" +
+            " WHEN (? = 0 AND ? = 1) THEN role_patient.project_id = ?" +
+            " ELSE patient_program.program_id = '' AND role_patient.project_id = ''" +
+            " END";
 
     public static List<UserLoginPatientCompositeVO> findAllUserBy(UserListQuerySO userListQuerySO)
             throws DataSourceException {
@@ -44,18 +45,23 @@ public class UserLoginPatientCompositeDAO {
     public static List<UserLoginPatientCompositeVO> findAllUserBy(UserListQuerySO userListQuerySO, Connection connection)
             throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_BY_STATEMENT);
-        preparedStatement.setInt(1, userListQuerySO.isProject() ? 1 : 0);
-        preparedStatement.setInt(2, userListQuerySO.isProgram() ? 1 : 0);
+        preparedStatement.setInt(1, userListQuerySO.isProgram() ? 1 : 0);
+        preparedStatement.setInt(2, userListQuerySO.isProject() ? 1 : 0);
         preparedStatement.setString(3, userListQuerySO.getProgramName());
         preparedStatement.setString(4, userListQuerySO.getProjectName());
-        preparedStatement.setInt(5, userListQuerySO.isProject() ? 1 : 0);
-        preparedStatement.setString(6, userListQuerySO.getProjectName());
-        preparedStatement.setInt(7, userListQuerySO.isProgram() ? 1 : 0);
-        preparedStatement.setString(8, userListQuerySO.getProgramName());
+        preparedStatement.setInt(5, userListQuerySO.isProgram() ? 1 : 0);
+        preparedStatement.setInt(6, userListQuerySO.isProject() ? 1 : 0);
+        preparedStatement.setString(7, userListQuerySO.getProgramName());
+        preparedStatement.setInt(8, userListQuerySO.isProgram() ? 1 : 0);
+        preparedStatement.setInt(9, userListQuerySO.isProject() ? 1 : 0);
+        preparedStatement.setString(10, userListQuerySO.getProjectName());
 
+        logger.debug(FIND_ALL_BY_STATEMENT + " [{}] [{}] [{}] [{}]",
+                userListQuerySO.isProgram(),
+                userListQuerySO.getProgramName(),
+                userListQuerySO.isProject(),
+                userListQuerySO.getProjectName());
 
-        logger.debug(FIND_ALL_BY_STATEMENT + " [{}]", userListQuerySO.getProgramName() + ":"
-                + userListQuerySO.getProjectName());
         ResultSet resultSet = preparedStatement.executeQuery();
         List<UserLoginPatientCompositeVO> userLoginCompositeVOs = new ArrayList<>();
 
