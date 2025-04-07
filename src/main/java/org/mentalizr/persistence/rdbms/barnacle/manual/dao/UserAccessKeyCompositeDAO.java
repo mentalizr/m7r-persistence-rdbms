@@ -5,9 +5,10 @@ import org.mentalizr.persistence.rdbms.barnacle.connectionManager.EntityNotFound
 import org.mentalizr.persistence.rdbms.barnacle.dao.UserAccessKeyDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.UserDAO;
 import org.mentalizr.persistence.rdbms.barnacle.manual.vo.UserAccessKeyCompositeVO;
-import org.mentalizr.persistence.rdbms.barnacle.manual.vo.UserLoginCompositeVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserAccessKeyVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserVO;
+import org.mentalizr.persistence.rdbms.edao.RoleAccessKeyEDAO;
+import org.mentalizr.serviceObjects.requestObjects.UserListQuerySO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +30,8 @@ public class UserAccessKeyCompositeDAO {
         return new UserAccessKeyCompositeVO(userVO, userAccessKeyVO);
     }
 
-    public static UserAccessKeyCompositeVO findByAccessKey(String accessKey) throws DataSourceException, EntityNotFoundException {
+    public static UserAccessKeyCompositeVO findByAccessKey(String accessKey)
+            throws DataSourceException, EntityNotFoundException {
         UserAccessKeyVO userAccessKeyVO = UserAccessKeyDAO.findByUk_accessKey(accessKey);
         UserVO userVO = UserDAO.load(userAccessKeyVO.getUserId());
         return new UserAccessKeyCompositeVO(userVO, userAccessKeyVO);
@@ -41,6 +43,20 @@ public class UserAccessKeyCompositeDAO {
         List<UserAccessKeyVO> userAccessKeyVOs = UserAccessKeyDAO.findAll();
         for (UserAccessKeyVO userAccessKeyVO : userAccessKeyVOs) {
             UserVO userVO = UserDAO.load(userAccessKeyVO.getUserId());
+            UserAccessKeyCompositeVO userAccessKeyCompositeVO = new UserAccessKeyCompositeVO(userVO, userAccessKeyVO);
+            userAccessKeyCompositeVOs.add(userAccessKeyCompositeVO);
+        }
+        return userAccessKeyCompositeVOs;
+    }
+
+    public static List<UserAccessKeyCompositeVO> findAllBy(UserListQuerySO userListQuerySO)
+            throws DataSourceException, EntityNotFoundException {
+        List<UserAccessKeyCompositeVO> userAccessKeyCompositeVOs = new ArrayList<>();
+        List<UserAccessKeyVO> userAccessKeyVOs = RoleAccessKeyEDAO.findAllBy(userListQuerySO);
+
+        for(UserAccessKeyVO userAccessKeyVO : userAccessKeyVOs) {
+            UserVO userVO = UserDAO.load(userAccessKeyVO.getUserId());
+
             UserAccessKeyCompositeVO userAccessKeyCompositeVO = new UserAccessKeyCompositeVO(userVO, userAccessKeyVO);
             userAccessKeyCompositeVOs.add(userAccessKeyCompositeVO);
         }

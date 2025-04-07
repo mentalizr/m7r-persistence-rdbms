@@ -49,6 +49,7 @@ tasks.register('barnacle', Exec) {
 
 dependencies {
     implementation libs.m7r.commons
+    implementation libs.m7r.serviceObjects
 
     implementation libs.ap.utils.core
     implementation libs.ap.barnacle

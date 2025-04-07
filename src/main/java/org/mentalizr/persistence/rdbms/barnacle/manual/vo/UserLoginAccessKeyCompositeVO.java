@@ -6,10 +6,8 @@ import org.mentalizr.persistence.rdbms.barnacle.vo.UserAccessKeyVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserVO;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
-import java.util.Date;
 
-public class UserAccessKeyPatientCompositeVO implements Serializable {
+public class UserLoginAccessKeyCompositeVO implements Serializable {
 
     private static final Long serialVersionUID = 2023070301L;
 
@@ -17,7 +15,7 @@ public class UserAccessKeyPatientCompositeVO implements Serializable {
     private final RolePatientVO rolePatientVO;
     private final PatientProgramVO patientProgramVO;
 
-    public UserAccessKeyPatientCompositeVO(
+    public UserLoginAccessKeyCompositeVO(
             UserVO userVO,
             UserAccessKeyVO userAccessKeyVO,
             RolePatientVO rolePatientVO,
@@ -28,7 +26,7 @@ public class UserAccessKeyPatientCompositeVO implements Serializable {
         this.patientProgramVO = patientProgramVO;
     }
 
-    public UserAccessKeyPatientCompositeVO(
+    public UserLoginAccessKeyCompositeVO(
             UserAccessKeyCompositeVO userAccessKeyCompositeVO,
             RolePatientVO rolePatientVO,
             PatientProgramVO patientProgramVO
