@@ -5,6 +5,7 @@ import org.mentalizr.persistence.rdbms.barnacle.connectionManager.EntityNotFound
 import org.mentalizr.persistence.rdbms.barnacle.dao.PatientProgramDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.RolePatientDAO;
 import org.mentalizr.persistence.rdbms.barnacle.manual.vo.UserAccessKeyCompositeVO;
+import org.mentalizr.persistence.rdbms.barnacle.manual.vo.UserAccessKeyPatientCompositeVO;
 import org.mentalizr.persistence.rdbms.barnacle.manual.vo.UserLoginAccessKeyCompositeVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.PatientProgramVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.RolePatientVO;
@@ -18,36 +19,36 @@ public class UserAccessKeyPatientCompositeDAO {
 
     private static Logger logger = LoggerFactory.getLogger(UserAccessKeyPatientCompositeDAO.class);
 
-    public static void create(UserLoginAccessKeyCompositeVO userLoginAccessKeyCompositeVO) throws DataSourceException {
-        UserAccessKeyCompositeDAO.create(userLoginAccessKeyCompositeVO.getUserAccessKeyCompositeVO());
-        RolePatientDAO.create(userLoginAccessKeyCompositeVO.getRolePatientVO());
-        PatientProgramDAO.create(userLoginAccessKeyCompositeVO.getPatientProgramVO());
+    public static void create(UserAccessKeyPatientCompositeVO userAccessKeyPatientCompositeVO) throws DataSourceException {
+        UserAccessKeyCompositeDAO.create(userAccessKeyPatientCompositeVO.getUserAccessKeyCompositeVO());
+        RolePatientDAO.create(userAccessKeyPatientCompositeVO.getRolePatientVO());
+        PatientProgramDAO.create(userAccessKeyPatientCompositeVO.getPatientProgramVO());
     }
 
-    public static UserLoginAccessKeyCompositeVO load(String userId) throws DataSourceException, EntityNotFoundException {
+    public static UserAccessKeyPatientCompositeVO load(String userId) throws DataSourceException, EntityNotFoundException {
         UserAccessKeyCompositeVO userAccessKeyCompositeVO = UserAccessKeyCompositeDAO.load(userId);
         RolePatientVO rolePatientVO = RolePatientDAO.load(userId);
         PatientProgramVO patientProgramVO = PatientProgramDAO.findByUk_user_id(userId);
-        return new UserLoginAccessKeyCompositeVO(userAccessKeyCompositeVO, rolePatientVO, patientProgramVO);
+        return new UserAccessKeyPatientCompositeVO(userAccessKeyCompositeVO, rolePatientVO, patientProgramVO);
     }
 
-    public static UserLoginAccessKeyCompositeVO findByAccessKey(String accessKey) throws DataSourceException, EntityNotFoundException {
+    public static UserAccessKeyPatientCompositeVO findByAccessKey(String accessKey) throws DataSourceException, EntityNotFoundException {
         UserAccessKeyCompositeVO userAccessKeyCompositeVO = UserAccessKeyCompositeDAO.findByAccessKey(accessKey);
         String userId = userAccessKeyCompositeVO.getUserId();
         RolePatientVO rolePatientVO = RolePatientDAO.load(userId);
         PatientProgramVO patientProgramVO = PatientProgramDAO.findByUk_user_id(userId);
-        return new UserLoginAccessKeyCompositeVO(userAccessKeyCompositeVO, rolePatientVO, patientProgramVO);
+        return new UserAccessKeyPatientCompositeVO(userAccessKeyCompositeVO, rolePatientVO, patientProgramVO);
     }
 
-    public static List<UserLoginAccessKeyCompositeVO> findAll() throws DataSourceException, EntityNotFoundException {
-        List<UserLoginAccessKeyCompositeVO> userLoginAccessKeyCompositeVOS = new ArrayList<>();
+    public static List<UserAccessKeyPatientCompositeVO> findAll() throws DataSourceException, EntityNotFoundException {
+        List<UserAccessKeyPatientCompositeVO> userLoginAccessKeyCompositeVOS = new ArrayList<>();
         List<UserAccessKeyCompositeVO> userAccessKeyCompositeVOs = UserAccessKeyCompositeDAO.findAll();
         for (UserAccessKeyCompositeVO userAccessKeyCompositeVO : userAccessKeyCompositeVOs) {
             String userId = userAccessKeyCompositeVO.getUserId();
             RolePatientVO rolePatientVO = RolePatientDAO.load(userId);
             PatientProgramVO patientProgramVO = PatientProgramDAO.findByUk_user_id(userId);
-            UserLoginAccessKeyCompositeVO userLoginAccessKeyCompositeVO
-                    = new UserLoginAccessKeyCompositeVO(userAccessKeyCompositeVO, rolePatientVO, patientProgramVO);
+            UserAccessKeyPatientCompositeVO userLoginAccessKeyCompositeVO
+                    = new UserAccessKeyPatientCompositeVO(userAccessKeyCompositeVO, rolePatientVO, patientProgramVO);
             userLoginAccessKeyCompositeVOS.add(userLoginAccessKeyCompositeVO);
         }
         return userLoginAccessKeyCompositeVOS;

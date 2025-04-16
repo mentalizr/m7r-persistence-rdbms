@@ -2,6 +2,7 @@ package org.mentalizr.persistence.rdbms.barnacle.manual.dao;
 
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.ConnectionManager;
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.DataSourceException;
+import org.mentalizr.persistence.rdbms.barnacle.manual.vo.UserAccessKeyPatientCompositeVO;
 import org.mentalizr.persistence.rdbms.barnacle.manual.vo.UserLoginAccessKeyCompositeVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.*;
 import org.mentalizr.serviceObjects.requestObjects.UserListQuerySO;
@@ -30,7 +31,7 @@ public class UserLoginAccessKeyCompositeDAO {
             " ELSE patient_program.program_id = '' AND role_patient.project_id = ''" +
             " END";
 
-    public static List<UserLoginAccessKeyCompositeVO> findAllUserBy(UserListQuerySO userListQuerySO)
+    public static List<UserAccessKeyPatientCompositeVO> findAllUserBy(UserListQuerySO userListQuerySO)
             throws DataSourceException {
         Connection connection = ConnectionManager.openConnection(UserLoginAccessKeyCompositeDAO.class);
         try {
@@ -42,7 +43,7 @@ public class UserLoginAccessKeyCompositeDAO {
         }
     }
 
-    public static List<UserLoginAccessKeyCompositeVO> findAllUserBy(UserListQuerySO userListQuerySO, Connection connection)
+    public static List<UserAccessKeyPatientCompositeVO> findAllUserBy(UserListQuerySO userListQuerySO, Connection connection)
             throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_BY_STATEMENT);
         preparedStatement.setInt(1, userListQuerySO.isProgram() ? 1 : 0);
@@ -63,16 +64,16 @@ public class UserLoginAccessKeyCompositeDAO {
                 userListQuerySO.getProjectName());
 
         ResultSet resultSet = preparedStatement.executeQuery();
-        List<UserLoginAccessKeyCompositeVO> userLoginAccessKeyCompositeVOs = new ArrayList<>();
+        List<UserAccessKeyPatientCompositeVO> userLoginAccessKeyCompositeVOs = new ArrayList<>();
 
         while (resultSet.next()) {
-            UserLoginAccessKeyCompositeVO userLoginAccessKeyCompositeVO = processResultSet(resultSet);
+            UserAccessKeyPatientCompositeVO userLoginAccessKeyCompositeVO = processResultSet(resultSet);
             userLoginAccessKeyCompositeVOs.add(userLoginAccessKeyCompositeVO);
         }
         return userLoginAccessKeyCompositeVOs;
     }
 
-    private static UserLoginAccessKeyCompositeVO processResultSet(ResultSet resultSet) throws SQLException {
+    private static UserAccessKeyPatientCompositeVO processResultSet(ResultSet resultSet) throws SQLException {
         UserVO userVO = new UserVO(resultSet.getObject("user_id", String.class));
         userVO.setActive(resultSet.getBoolean("active"));
         userVO.setCreation(resultSet.getLong("creation"));
@@ -92,6 +93,7 @@ public class UserLoginAccessKeyCompositeDAO {
         PatientProgramVO patientProgramVO = new PatientProgramVO(patientProgramPK);
         patientProgramVO.setBlocking(resultSet.getBoolean("blocking"));
 
-        return new UserLoginAccessKeyCompositeVO(userVO, userAccessKeyVO, rolePatientVO, patientProgramVO);
+        return new UserAccessKeyPatientCompositeVO(userVO, userAccessKeyVO, rolePatientVO, patientProgramVO);
     }
+
 }
