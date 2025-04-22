@@ -2,18 +2,22 @@ package org.mentalizr.persistence.rdbms.edao;
 
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.ConnectionManager;
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.DataSourceException;
+import org.mentalizr.persistence.rdbms.barnacle.dao.UserDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.UserLoginDAO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserLoginVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserLoginEDAO {
 
     private static final Logger logger = LoggerFactory.getLogger(UserLoginEDAO.class);
 
     private static final String UPDATE_PASSWORD_HASH_STATEMENT = "UPDATE user_login SET password_hash = ? WHERE user_id = ?";
+    private static final String FIND_ALL_ID_STATEMENT = "SELECT user_id FROM user_login";
 
     public static void updatePasswordHash(String userId, String passwordHash) throws DataSourceException {
         Connection connection = ConnectionManager.openConnection(UserLoginDAO.class);
@@ -61,6 +65,17 @@ public class UserLoginEDAO {
         if (o == null) { return "NULL"; }
         if (sqlType.startsWith("VARCHAR") || sqlType.equals("DATE")) { return "'" + o + "'"; }
         return "" + o;
+    }
+
+    public static List<String> findAllIds() throws DataSourceException {
+        Connection connection = ConnectionManager.openConnection(UserLoginEDAO.class);
+        try {
+            return Commons.findAllIds(connection, FIND_ALL_ID_STATEMENT, "user_id");
+        } catch (SQLException e) {
+            throw new DataSourceException(e);
+        } finally {
+            ConnectionManager.releaseConnection(connection, UserLoginEDAO.class);
+        }
     }
 
 }

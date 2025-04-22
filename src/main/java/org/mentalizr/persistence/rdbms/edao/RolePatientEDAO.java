@@ -3,9 +3,6 @@ package org.mentalizr.persistence.rdbms.edao;
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.ConnectionManager;
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.DataSourceException;
 import org.mentalizr.persistence.rdbms.barnacle.dao.RolePatientDAO;
-import org.mentalizr.persistence.rdbms.barnacle.manual.vo.UserLoginCompositeVO;
-import org.mentalizr.persistence.rdbms.barnacle.vo.UserLoginVO;
-import org.mentalizr.persistence.rdbms.barnacle.vo.UserVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,11 +15,24 @@ public class RolePatientEDAO {
 
     private static final Logger logger = LoggerFactory.getLogger(RolePatientEDAO.class);
 
+    private static final String FIND_ALL_ID_STATEMENT = "SELECT user_id FROM role_patient";
+
     private static final String PATIENT_PROGRAM_PROJECT_STATEMENT =
             "SELECT role_patient.user_id FROM role_patient, patient_program WHERE project_id = ? AND patient_program.user_id = role_patient.user_id AND patient_program.program_id = ?";
 
     private static final String PATIENT_PROGRAM_UNASSIGNED_PROJECT_STATEMENT =
             "SELECT role_patient.user_id FROM role_patient, patient_program WHERE project_id IS NULL AND patient_program.user_id = role_patient.user_id AND patient_program.program_id = ?";
+
+    public static List<String> findAllIds() throws DataSourceException {
+        Connection connection = ConnectionManager.openConnection(RolePatientEDAO.class);
+        try {
+            return Commons.findAllIds(connection, FIND_ALL_ID_STATEMENT, "user_id");
+        } catch (SQLException e) {
+            throw new DataSourceException(e);
+        } finally {
+            ConnectionManager.releaseConnection(connection, RolePatientEDAO.class);
+        }
+    }
 
     public static List<String> findAllUserIdsForProgramAndProject(String programId, String projectId) throws DataSourceException {
         Connection connection = ConnectionManager.openConnection(RolePatientEDAO.class);
