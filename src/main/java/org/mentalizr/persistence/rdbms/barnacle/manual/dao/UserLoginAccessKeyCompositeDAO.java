@@ -65,14 +65,15 @@ public class UserLoginAccessKeyCompositeDAO {
                     userListQuerySO.getProjectName());
 
             resultSet = preparedStatement.executeQuery();
-        }
-        List<UserAccessKeyPatientCompositeVO> userLoginAccessKeyCompositeVOs = new ArrayList<>();
+            List<UserAccessKeyPatientCompositeVO> userLoginAccessKeyCompositeVOs = new ArrayList<>();
 
-        while (resultSet.next()) {
-            UserAccessKeyPatientCompositeVO userLoginAccessKeyCompositeVO = processResultSet(resultSet);
-            userLoginAccessKeyCompositeVOs.add(userLoginAccessKeyCompositeVO);
+            while (resultSet.next()) {
+                UserAccessKeyPatientCompositeVO userLoginAccessKeyCompositeVO = processResultSet(resultSet);
+                userLoginAccessKeyCompositeVOs.add(userLoginAccessKeyCompositeVO);
+            }
+
+            return userLoginAccessKeyCompositeVOs;
         }
-        return userLoginAccessKeyCompositeVOs;
     }
 
     private static UserAccessKeyPatientCompositeVO processResultSet(ResultSet resultSet) throws SQLException {
