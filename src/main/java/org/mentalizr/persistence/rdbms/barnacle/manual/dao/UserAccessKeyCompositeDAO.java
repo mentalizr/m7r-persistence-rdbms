@@ -7,17 +7,11 @@ import org.mentalizr.persistence.rdbms.barnacle.dao.UserDAO;
 import org.mentalizr.persistence.rdbms.barnacle.manual.vo.UserAccessKeyCompositeVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserAccessKeyVO;
 import org.mentalizr.persistence.rdbms.barnacle.vo.UserVO;
-import org.mentalizr.persistence.rdbms.edao.RoleAccessKeyEDAO;
-import org.mentalizr.serviceObjects.requestObjects.UserListQuerySO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserAccessKeyCompositeDAO {
-
-    private static Logger logger = LoggerFactory.getLogger(UserAccessKeyCompositeDAO.class);
 
     public static void create(UserAccessKeyCompositeVO userAccessKeyCompositeVO) throws DataSourceException {
         UserDAO.create(userAccessKeyCompositeVO.getUserVO());
@@ -43,20 +37,6 @@ public class UserAccessKeyCompositeDAO {
         List<UserAccessKeyVO> userAccessKeyVOs = UserAccessKeyDAO.findAll();
         for (UserAccessKeyVO userAccessKeyVO : userAccessKeyVOs) {
             UserVO userVO = UserDAO.load(userAccessKeyVO.getUserId());
-            UserAccessKeyCompositeVO userAccessKeyCompositeVO = new UserAccessKeyCompositeVO(userVO, userAccessKeyVO);
-            userAccessKeyCompositeVOs.add(userAccessKeyCompositeVO);
-        }
-        return userAccessKeyCompositeVOs;
-    }
-
-    public static List<UserAccessKeyCompositeVO> findAllBy(UserListQuerySO userListQuerySO)
-            throws DataSourceException, EntityNotFoundException {
-        List<UserAccessKeyCompositeVO> userAccessKeyCompositeVOs = new ArrayList<>();
-        List<UserAccessKeyVO> userAccessKeyVOs = RoleAccessKeyEDAO.findAllBy(userListQuerySO);
-
-        for(UserAccessKeyVO userAccessKeyVO : userAccessKeyVOs) {
-            UserVO userVO = UserDAO.load(userAccessKeyVO.getUserId());
-
             UserAccessKeyCompositeVO userAccessKeyCompositeVO = new UserAccessKeyCompositeVO(userVO, userAccessKeyVO);
             userAccessKeyCompositeVOs.add(userAccessKeyCompositeVO);
         }

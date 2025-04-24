@@ -27,7 +27,7 @@ public class UserLoginPatientCompositeDAO {
             " WHEN (? = 1 AND ? = 1) THEN patient_program.program_id = ? AND role_patient.project_id = ?" +
             " WHEN (? = 1 AND ? = 0) THEN patient_program.program_id = ?" +
             " WHEN (? = 0 AND ? = 1) THEN role_patient.project_id = ?" +
-            " ELSE patient_program.program_id = '' AND role_patient.project_id = ''" +
+            " ELSE TRUE" +
             " END";
 
     public static List<UserLoginPatientCompositeVO> findAllUserBy(UserListQuerySO userListQuerySO)
@@ -42,45 +42,42 @@ public class UserLoginPatientCompositeDAO {
         }
     }
 
+    @SuppressWarnings("DuplicatedCode")
     public static List<UserLoginPatientCompositeVO> findAllUserBy(UserListQuerySO userListQuerySO, Connection connection)
             throws SQLException {
         ResultSet resultSet;
         try (PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_BY_STATEMENT)) {
-            preparedStatement.setInt(1, userListQuerySO.isProgram() ? 1 : 0);
-            preparedStatement.setInt(2, userListQuerySO.isProject() ? 1 : 0);
-            preparedStatement.setString(3, userListQuerySO.getProgramName());
-            preparedStatement.setString(4, userListQuerySO.getProjectName());
-            preparedStatement.setInt(5, userListQuerySO.isProgram() ? 1 : 0);
-            preparedStatement.setInt(6, userListQuerySO.isProject() ? 1 : 0);
-            preparedStatement.setString(7, userListQuerySO.getProgramName());
-            preparedStatement.setInt(8, userListQuerySO.isProgram() ? 1 : 0);
-            preparedStatement.setInt(9, userListQuerySO.isProject() ? 1 : 0);
-            preparedStatement.setString(10, userListQuerySO.getProjectName());
+            preparedStatement.setInt(1, userListQuerySO.hasProgram() ? 1 : 0);
+            preparedStatement.setInt(2, userListQuerySO.hasProject() ? 1 : 0);
+            preparedStatement.setString(3, userListQuerySO.getProgram());
+            preparedStatement.setString(4, userListQuerySO.getProject());
+            preparedStatement.setInt(5, userListQuerySO.hasProgram() ? 1 : 0);
+            preparedStatement.setInt(6, userListQuerySO.hasProject() ? 1 : 0);
+            preparedStatement.setString(7, userListQuerySO.getProgram());
+            preparedStatement.setInt(8, userListQuerySO.hasProgram() ? 1 : 0);
+            preparedStatement.setInt(9, userListQuerySO.hasProject() ? 1 : 0);
+            preparedStatement.setString(10, userListQuerySO.getProject());
 
             logger.debug(FIND_ALL_BY_STATEMENT + " [{}] [{}] [{}] [{}]",
-                    userListQuerySO.isProgram(),
-                    userListQuerySO.getProgramName(),
-                    userListQuerySO.isProject(),
-                    userListQuerySO.getProjectName());
+                    userListQuerySO.hasProgram(),
+                    userListQuerySO.getProgram(),
+                    userListQuerySO.hasProject(),
+                    userListQuerySO.getProject());
 
             resultSet = preparedStatement.executeQuery();
-        }
-        List<UserLoginPatientCompositeVO> userLoginCompositeVOs = new ArrayList<>();
+            List<UserLoginPatientCompositeVO> userLoginCompositeVOs = new ArrayList<>();
 
-        while (resultSet.next()) {
-            UserLoginPatientCompositeVO userLoginPatientCompositeVO = processResultSet(resultSet);
-            userLoginCompositeVOs.add(userLoginPatientCompositeVO);
-        }
+            while (resultSet.next()) {
+                UserLoginPatientCompositeVO userLoginPatientCompositeVO = processResultSet(resultSet);
+                userLoginCompositeVOs.add(userLoginPatientCompositeVO);
+            }
 
-        return userLoginCompositeVOs;
+            return userLoginCompositeVOs;
+        }
     }
 
     private static UserLoginPatientCompositeVO processResultSet(ResultSet resultSet) throws SQLException {
-        UserVO userVO = new UserVO(resultSet.getObject("user_id", String.class));
-        userVO.setActive(resultSet.getObject("active", Boolean.class));
-        userVO.setCreation(resultSet.getObject("creation", Long.class));
-        userVO.setFirstActive(resultSet.getObject("firstActive", Long.class));
-        userVO.setLastActive(resultSet.getObject("lastActive", Long.class));
+        UserVO userVO = UserDAOCommons.createUserVO(resultSet);
 
         UserLoginVO userLoginVO = new UserLoginVO(resultSet.getObject("user_id", String.class));
         userLoginVO.setPasswordHash(resultSet.getObject("password_hash", String.class));
@@ -95,14 +92,8 @@ public class UserLoginPatientCompositeDAO {
         userLoginVO.setSecondFA(resultSet.getObject("second_fa", Boolean.class));
         userLoginVO.setRenewPasswordRequired(resultSet.getObject("renew_pw_req", Boolean.class));
 
-        RolePatientVO rolePatientVO = new RolePatientVO(userVO.getId());
-        rolePatientVO.setTherapistId(resultSet.getObject("therapist_id", String.class));
-        rolePatientVO.setProjectId(resultSet.getObject("project_id", String.class));
-
-        PatientProgramPK patientProgramPK
-                = new PatientProgramPK(userVO.getId(), resultSet.getObject("program_id", String.class));
-        PatientProgramVO patientProgramVO = new PatientProgramVO(patientProgramPK);
-        patientProgramVO.setBlocking(resultSet.getObject("blocking", Boolean.class));
+        RolePatientVO rolePatientVO = UserDAOCommons.createRolePatientVO(resultSet);
+        PatientProgramVO patientProgramVO = UserDAOCommons.createPatientProgramVO(resultSet);
 
         return new UserLoginPatientCompositeVO(userVO, userLoginVO, patientProgramVO, rolePatientVO);
     }
