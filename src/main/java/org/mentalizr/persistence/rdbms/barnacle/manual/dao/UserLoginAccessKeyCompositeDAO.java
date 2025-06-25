@@ -18,17 +18,20 @@ import java.util.List;
 public class UserLoginAccessKeyCompositeDAO {
     private static final Logger logger = LoggerFactory.getLogger(UserLoginAccessKeyCompositeDAO.class);
 
-    private static final String FIND_ALL_BY_STATEMENT = "SELECT user.active, creation, firstActive, lastActive, user_access_key.user_id, accessKey, therapist_id, patient_program.program_id, blocking, role_patient.project_id" +
-            " FROM user_access_key" +
-            " INNER JOIN user ON user_access_key.user_id = user.id" +
-            " INNER JOIN patient_program ON user_access_key.user_id = patient_program.user_id" +
-            " INNER JOIN role_patient ON user_access_key.user_id = role_patient.user_id" +
-            " WHERE CASE" +
-            " WHEN (? = 1 AND ? = 1) THEN patient_program.program_id = ? AND role_patient.project_id = ?" +
-            " WHEN (? = 1 AND ? = 0) THEN patient_program.program_id = ?" +
-            " WHEN (? = 0 AND ? = 1) THEN role_patient.project_id = ?" +
-            " ELSE TRUE" +
-            " END";
+    private static final String FIND_ALL_BY_STATEMENT =
+            "SELECT u.active, u.creation, u.firstActive, u.lastActive, " +
+                    "uak.user_id, uak.accessKey, " +
+                    "rp.therapist_id, pp.program_id, pp.blocking, rp.project_id " +
+                    "FROM user_access_key uak " +
+                    "INNER JOIN user u ON uak.user_id = u.id " +
+                    "INNER JOIN patient_program pp ON uak.user_id = pp.user_id " +
+                    "INNER JOIN role_patient rp ON uak.user_id = rp.user_id " +
+                    "WHERE CASE " +
+                    "WHEN (? = 1 AND ? = 1) THEN pp.program_id = ? AND rp.project_id = ? " +
+                    "WHEN (? = 1 AND ? = 0) THEN pp.program_id = ? " +
+                    "WHEN (? = 0 AND ? = 1) THEN rp.project_id = ? " +
+                    "ELSE TRUE " +
+                    "END";
 
     public static List<UserAccessKeyPatientCompositeVO> findAllUserBy(UserListQuerySO userListQuerySO)
             throws DataSourceException {
@@ -42,7 +45,7 @@ public class UserLoginAccessKeyCompositeDAO {
         }
     }
 
-    @SuppressWarnings("DuplicatedCode")
+//    @SuppressWarnings("DuplicatedCode")
     public static List<UserAccessKeyPatientCompositeVO> findAllUserBy(UserListQuerySO userListQuerySO, Connection connection)
             throws SQLException {
         ResultSet resultSet;

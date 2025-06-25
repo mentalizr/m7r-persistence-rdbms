@@ -18,17 +18,37 @@ import java.util.List;
 public class UserLoginPatientCompositeDAO {
     private static final Logger logger = LoggerFactory.getLogger(UserLoginPatientCompositeDAO.class);
 
-    private static final String FIND_ALL_BY_STATEMENT = "SELECT role_patient.user_id, therapist_id, project_id, patient_program.program_id, blocking, user_login.username, password_hash, email, first_name, last_name, gender, second_fa, email_confirmation, email_conf_token, email_conf_code, renew_pw_req, user.active, creation, firstActive, lastActive" +
-            " FROM role_patient" +
-            " INNER JOIN patient_program ON role_patient.user_id = patient_program.user_id" +
-            " INNER JOIN user_login ON role_patient.user_id = user_login.user_id" +
-            " INNER JOIN user ON role_patient.user_id = user.id" +
-            " WHERE CASE " +
-            " WHEN (? = 1 AND ? = 1) THEN patient_program.program_id = ? AND role_patient.project_id = ?" +
-            " WHEN (? = 1 AND ? = 0) THEN patient_program.program_id = ?" +
-            " WHEN (? = 0 AND ? = 1) THEN role_patient.project_id = ?" +
-            " ELSE TRUE" +
-            " END";
+    private static final String FIND_ALL_BY_STATEMENT =
+            "SELECT rp.user_id, rp.therapist_id, rp.project_id, " +
+                    "pp.program_id, pp.blocking, " +
+                    "ul.username, ul.password_hash, ul.email, ul.first_name, ul.last_name, ul.gender, ul.second_fa, " +
+                    "ul.email_confirmation, ul.email_conf_token, ul.email_conf_code, ul.renew_pw_req, " +
+                    "u.active, u.creation, u.firstActive, u.lastActive " +
+                    "FROM role_patient rp " +
+                    "INNER JOIN patient_program pp ON rp.user_id = pp.user_id " +
+                    "INNER JOIN user_login ul ON rp.user_id = ul.user_id " +
+                    "INNER JOIN user u ON rp.user_id = u.id " +
+                    "WHERE CASE " +
+                    "WHEN (? = 1 AND ? = 1) THEN pp.program_id = ? AND rp.project_id = ? " +
+                    "WHEN (? = 1 AND ? = 0) THEN pp.program_id = ? " +
+                    "WHEN (? = 0 AND ? = 1) THEN rp.project_id = ? " +
+                    "ELSE TRUE " +
+                    "END";
+//    private static final String FIND_ALL_BY_STATEMENT =
+//            "SELECT role_patient.user_id, therapist_id, project_id, patient_program.program_id, blocking, " +
+//                    "user_login.username, password_hash, email, first_name, last_name, gender, second_fa, " +
+//                    "email_confirmation, email_conf_token, email_conf_code, renew_pw_req, " +
+//                    "user.active, creation, firstActive, lastActive" +
+//                    " FROM role_patient" +
+//                    " INNER JOIN patient_program ON role_patient.user_id = patient_program.user_id" +
+//                    " INNER JOIN user_login ON role_patient.user_id = user_login.user_id" +
+//                    " INNER JOIN user ON role_patient.user_id = user.id" +
+//                    " WHERE CASE " +
+//                    " WHEN (? = 1 AND ? = 1) THEN patient_program.program_id = ? AND role_patient.project_id = ?" +
+//                    " WHEN (? = 1 AND ? = 0) THEN patient_program.program_id = ?" +
+//                    " WHEN (? = 0 AND ? = 1) THEN role_patient.project_id = ?" +
+//                    " ELSE TRUE" +
+//                    " END";
 
     public static List<UserLoginPatientCompositeVO> findAllUserBy(UserListQuerySO userListQuerySO)
             throws DataSourceException {
