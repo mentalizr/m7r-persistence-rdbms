@@ -39,13 +39,6 @@ public class UserLoginCompositeDAO {
         return new UserLoginCompositeVO(userVO, userLoginVO);
     }
 
-    // TODO CR warum nicht load(userId) nutzen?
-    public static UserLoginCompositeVO findByUK_userid(String userid) throws DataSourceException, EntityNotFoundException {
-        UserLoginVO userLoginVO = UserLoginDAO.findByFk_user_login_user_id(userid).getFirst();
-        UserVO userVO = UserDAO.load(userLoginVO.getUserId());
-        return new UserLoginCompositeVO(userVO, userLoginVO);
-    }
-
     public static List<UserLoginCompositeVO> findAll()
             throws DataSourceException, EntityNotFoundException {
         List<UserLoginCompositeVO> userLoginCompositeVOs = new ArrayList<>();
