@@ -19,24 +19,28 @@ public class UserLoginCompositeDAO {
 
     private static Logger logger = LoggerFactory.getLogger(UserLoginCompositeDAO.class);
 
-    public static void create(UserLoginCompositeVO userLoginCompositeVO) throws DataSourceException {
+    public static void create(UserLoginCompositeVO userLoginCompositeVO)
+            throws DataSourceException {
         UserDAO.create(userLoginCompositeVO.getUserVO());
         UserLoginDAO.create(userLoginCompositeVO.getUserLoginVO());
     }
 
-    public static UserLoginCompositeVO load(String userId) throws DataSourceException, EntityNotFoundException {
+    public static UserLoginCompositeVO load(String userId)
+            throws DataSourceException, EntityNotFoundException {
         UserVO userVO = UserDAO.load(userId);
         UserLoginVO userLoginVO = UserLoginDAO.load(userId);
         return new UserLoginCompositeVO(userVO, userLoginVO);
     }
 
-    public static UserLoginCompositeVO findByUk_username(String username) throws DataSourceException, EntityNotFoundException {
+    public static UserLoginCompositeVO findByUk_username(String username)
+            throws DataSourceException, EntityNotFoundException {
         UserLoginVO userLoginVO = UserLoginDAO.findByUk_username(username);
         UserVO userVO = UserDAO.load(userLoginVO.getUserId());
         return new UserLoginCompositeVO(userVO, userLoginVO);
     }
 
-    public static List<UserLoginCompositeVO> findAll() throws DataSourceException, EntityNotFoundException {
+    public static List<UserLoginCompositeVO> findAll()
+            throws DataSourceException, EntityNotFoundException {
         List<UserLoginCompositeVO> userLoginCompositeVOs = new ArrayList<>();
 
         List<UserLoginVO> userLoginVOs = UserLoginDAO.findAll();
@@ -48,7 +52,8 @@ public class UserLoginCompositeDAO {
         return userLoginCompositeVOs;
     }
 
-    public static List<UserLoginCompositeVO> findAllPatients() throws DataSourceException {
+    public static List<UserLoginCompositeVO> findAllPatients()
+            throws DataSourceException {
         List<UserLoginCompositeVO> userLoginCompositeVOs = new ArrayList<>();
         List<RolePatientVO> rolePatientVOs = RolePatientDAO.findAll();
 
