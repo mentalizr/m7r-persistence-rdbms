@@ -18,6 +18,8 @@ public class UserLoginEDAO {
 
     private static final String UPDATE_PASSWORD_HASH_STATEMENT = "UPDATE user_login SET password_hash = ? WHERE user_id = ?";
     private static final String FIND_ALL_ID_STATEMENT = "SELECT user_id FROM user_login";
+    private static final String UNSET_RENEW_PASSWORD_STATEMENT =
+            "UPDATE %s SET %s = false WHERE %s = ?";
 
     public static void updatePasswordHash(String userId, String passwordHash) throws DataSourceException {
         Connection connection = ConnectionManager.openConnection(UserLoginDAO.class);
@@ -30,7 +32,8 @@ public class UserLoginEDAO {
         }
     }
 
-    public static void updatePasswordHash(String userId, String passwordHash, Connection connection) throws SQLException {
+    public static void updatePasswordHash(String userId, String passwordHash, Connection connection)
+            throws SQLException {
         PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_PASSWORD_HASH_STATEMENT);
         preparedStatement.setObject(1, passwordHash, Types.VARCHAR);
         preparedStatement.setObject(2, userId, Types.VARCHAR);
@@ -51,14 +54,17 @@ public class UserLoginEDAO {
     }
 
     public static void unsetRenewPasswordRequired(String userId, Connection connection) throws SQLException {
-        String sql = "UPDATE " + UserLoginVO.TABLENAME + " SET "
-                + UserLoginVO.RENEWPASSWORDREQUIRED + " = false"
-                + " WHERE "
-                + UserLoginVO.USERID + " = " + getValueExpression(userId, "VARCHAR(255)");
-        logger.debug(sql);
-        Statement statement = connection.createStatement();
-        statement.execute(sql);
-        try { statement.close(); } catch (SQLException ignored) {}
+        String finalStatement = String
+                .format(UNSET_RENEW_PASSWORD_STATEMENT,
+                        UserLoginVO.TABLENAME,
+                        UserLoginVO.RENEWPASSWORDREQUIRED,
+                        UserLoginVO.USERID);
+
+        PreparedStatement preparedStatement = connection.prepareStatement(finalStatement);
+        preparedStatement.setObject(1, getValueExpression(userId, "VARCHAR(255)"));
+
+        logger.debug(preparedStatement + "[{}], ", userId);
+        try { preparedStatement.executeQuery(); } catch (SQLException ignored) {}
     }
 
     private static String getValueExpression(Object o, String sqlType) {

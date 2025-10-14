@@ -7,14 +7,14 @@ import org.mentalizr.persistence.rdbms.barnacle.vo.PolicyConsentVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 @SuppressWarnings({"SqlDialectInspection", "SqlNoDataSourceInspection"})
 public class PolicyConsentEDAO {
 
     private static final Logger logger = LoggerFactory.getLogger(PolicyConsentEDAO.class);
+
+    private static final String DELETE_ALL_FOR_USER_STATEMENT = "DELETE FROM %s WHERE %s = ?";
 
     public static void deleteAllForUser(String userId) throws DataSourceException {
         Connection connection = ConnectionManager.openConnection(UserLoginDAO.class);
@@ -28,12 +28,15 @@ public class PolicyConsentEDAO {
     }
 
     public static void deleteAllForUser(String userId, Connection connection) throws SQLException {
-        String sql = "DELETE FROM " + PolicyConsentVO.TABLENAME + " WHERE "
-                + PolicyConsentVO.USERID + " = \"" + userId + "\"";
-        logger.debug(sql);
-        Statement statement = connection.createStatement();
-        statement.execute(sql);
-        if (statement != null) { try { statement.close(); } catch (SQLException e) {}}
+        String finalStatement = String
+                .format(DELETE_ALL_FOR_USER_STATEMENT,
+                        PolicyConsentVO.TABLENAME,
+                        PolicyConsentVO.USERID);
+
+        PreparedStatement preparedStatement = connection.prepareStatement(finalStatement);
+        preparedStatement.setObject(1, userId);
+        logger.debug(preparedStatement + "[{}] ", userId);
+        try { preparedStatement.executeQuery(); } catch (SQLException ignored) {}
     }
 
 }
