@@ -2,24 +2,27 @@ package org.mentalizr.persistence.rdbms.edao;
 
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.ConnectionManager;
 import org.mentalizr.persistence.rdbms.barnacle.connectionManager.DataSourceException;
-import org.mentalizr.persistence.rdbms.barnacle.dao.UserDAO;
 import org.mentalizr.persistence.rdbms.barnacle.dao.UserLoginDAO;
-import org.mentalizr.persistence.rdbms.barnacle.vo.UserLoginVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
-import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
+
+import static org.mentalizr.persistence.rdbms.barnacle.vo.UserLoginVO.*;
 
 public class UserLoginEDAO {
 
     private static final Logger logger = LoggerFactory.getLogger(UserLoginEDAO.class);
 
-    private static final String UPDATE_PASSWORD_HASH_STATEMENT = "UPDATE user_login SET password_hash = ? WHERE user_id = ?";
+    private static final String UPDATE_PASSWORD_HASH_STATEMENT
+            = "UPDATE user_login SET password_hash = ? WHERE user_id = ?";
     private static final String FIND_ALL_ID_STATEMENT = "SELECT user_id FROM user_login";
-    private static final String UNSET_RENEW_PASSWORD_STATEMENT =
-            "UPDATE %s SET %s = false WHERE %s = ?";
+    private static final String UNSET_RENEW_PASSWORD_STATEMENT
+            ="UPDATE " + TABLENAME + " SET " + RENEWPASSWORDREQUIRED + " = false WHERE " + USERID + " = ?";
 
     public static void updatePasswordHash(String userId, String passwordHash) throws DataSourceException {
         Connection connection = ConnectionManager.openConnection(UserLoginDAO.class);
@@ -37,7 +40,7 @@ public class UserLoginEDAO {
         PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_PASSWORD_HASH_STATEMENT);
         preparedStatement.setObject(1, passwordHash, Types.VARCHAR);
         preparedStatement.setObject(2, userId, Types.VARCHAR);
-        logger.debug(UPDATE_PASSWORD_HASH_STATEMENT + " [" + passwordHash + "][" + userId + "]");
+        logger.debug(UPDATE_PASSWORD_HASH_STATEMENT + " [{}] [{}]", passwordHash, userId);
         preparedStatement.executeUpdate();
         try { preparedStatement.close(); } catch (SQLException ignored) {}
     }
@@ -54,23 +57,10 @@ public class UserLoginEDAO {
     }
 
     public static void unsetRenewPasswordRequired(String userId, Connection connection) throws SQLException {
-        String finalStatement = String
-                .format(UNSET_RENEW_PASSWORD_STATEMENT,
-                        UserLoginVO.TABLENAME,
-                        UserLoginVO.RENEWPASSWORDREQUIRED,
-                        UserLoginVO.USERID);
-
-        PreparedStatement preparedStatement = connection.prepareStatement(finalStatement);
-        preparedStatement.setObject(1, getValueExpression(userId, "VARCHAR(255)"));
-
-        logger.debug(preparedStatement + "[{}], ", userId);
+        PreparedStatement preparedStatement = connection.prepareStatement(UNSET_RENEW_PASSWORD_STATEMENT);
+        preparedStatement.setObject(1, userId);
+        logger.debug(UNSET_RENEW_PASSWORD_STATEMENT + " [{}]", userId);
         try { preparedStatement.executeQuery(); } catch (SQLException ignored) {}
-    }
-
-    private static String getValueExpression(Object o, String sqlType) {
-        if (o == null) { return "NULL"; }
-        if (sqlType.startsWith("VARCHAR") || sqlType.equals("DATE")) { return "'" + o + "'"; }
-        return "" + o;
     }
 
     public static List<String> findAllIds() throws DataSourceException {
